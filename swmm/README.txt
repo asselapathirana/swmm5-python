@@ -8,21 +8,24 @@ from the source5-xxx directory.
 to build a distribution, use do.bash
 
 windows: 
-<to do> http://docs.python.org/distutils/builtdist.html
 
-try:
 1. Install code::blocks ide
 2. Run mingwvars.bat (in codeblocks/mingw directory) file at the command prompt. Now gcc should be callable. 
 3. pexports c:\Python27\python27.dll > python27.def(could be in C:\Windows\SysWOW64 in some cases)
 dlltool --dllname c:\Python27\python27.dll --def python27.def --output-lib libpython27.a
+* copy libpython27.a to c:\python27\libs (this is needed for setup.py below to run)
 4. Download and install swigwin
 5. swig.exe -python swmm5.i 
-6. gcc -c *.c -Ic:\python27\include 
-gcc -shared *.o -o _swmm5.pyd  -Lc:\Python27 -lpython27
-(or 
-gcc -shared *.o -o _swmm5.pyd  -LC:\Windows\SysWOW64 -lpython27)
+# this part is not necessary
+# 6. gcc -c *.c -Ic:\python27\include 
+#gcc -shared *.o -o _swmm5.pyd  -Lc:\Python27 -lpython27
+#or 
+#gcc -shared *.o -o _swmm5.pyd  -LC:\Windows\SysWOW64 -lpython27)
 
-7. If everything works fine then
+add any extra files (e.g. swmm5_test.py, swmm5example.inp) to script directive
+scripts= ['swmm5Example.inp', 'swmm5_test.py'] # these will be installed into the SCRIPTS directory. 
+#7. If everything works fine then
+7. Then run 
 python.exe setup.py bdist --format=wininst :: AT THE MOMENT THIS DOES NOT BUILD THE PACKAGE PROPERLY
 
 ( Edit ( create if not existing ) distutils.cfg located at C:\Python27\Lib\distutils\distutils.cfg to be:
@@ -39,7 +42,7 @@ and I also had to patch c:\python27\Lib\distutils\cygwinccompiler.py
                                         #% (self.linker_dll, shared_option,
                                            #entry_point))
         
-        self.set_executables(compiler='gcc  -O -Wall',
+self.set_executables(compiler='gcc  -O -Wall',
                              compiler_so='gcc  -mdll -O -Wall',
                              compiler_cxx='g++  -O -Wall',
                              linker_exe='gcc ',
@@ -49,8 +52,5 @@ and I also had to patch c:\python27\Lib\distutils\cygwinccompiler.py
 
 )
 
-instead
-copy _swmm5.pyd and swmm5.py files to <python27>/Lib/site-packages directory. 
 
-To test: run  swmm5_test.py in src directory
 

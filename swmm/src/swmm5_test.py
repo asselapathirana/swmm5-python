@@ -12,8 +12,8 @@ def err(e):
 if __name__ == "__main__":
 
     import swmm5 as sw
-    outfile="Example.bin"
-    ret=sw.RunSwmmDll("Example.inp","Example.rpt",outfile)
+    outfile="swmm5Example.bin"
+    ret=sw.RunSwmmDll("swmm5Example.inp","swmm5Example.rpt",outfile)
     err(ret)
     err(sw.OpenSwmmOutFile(outfile))
     results=[]
