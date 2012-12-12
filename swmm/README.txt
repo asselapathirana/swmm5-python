@@ -33,7 +33,7 @@ python.exe setup.py bdist --format=wininst :: AT THE MOMENT THIS DOES NOT BUILD 
 compiler=mingw32
 
 and I also had to patch c:\python27\Lib\distutils\cygwinccompiler.py
-
+(remove depricated -mno-cygwin option)
 #self.set_executables(compiler='gcc -mno-cygwin -O -Wall',
                              #compiler_so='gcc -mno-cygwin -mdll -O -Wall',
                              #compiler_cxx='g++ -mno-cygwin -O -Wall',
