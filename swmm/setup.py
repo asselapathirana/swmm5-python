@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+"""
+setup.py file for SWMM5 pyton library  - Assela Pathirana
+"""
+
+from setuptools import setup, Extension
+from itertools import product
+ 
+swmm5_module = Extension('_swmm5',
+                           sources=['swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 'datetime.c', 
+                                     'dynwave.c', 'error.c', 'findroot.c', 'flowrout.c', 
+                                     'forcmain.c', 'gage.c', 'gwater.c', 'hash.c', 'iface.c', 
+                                     'infil.c', 'inflow.c', 'input.c', 'inputrpt.c', 'keywords.c', 
+                                     'kinwave.c', 'landuse.c', 'lid.c', 'link.c', 'massbal.c', 
+                                     'mathexpr.c', 'mempool.c', 'node.c', 'odesolve.c', 'output.c', 
+                                     'project.c', 'qualrout.c', 'rain.c', 'rdii.c', 'report.c', 
+                                     'routing.c', 'runoff.c', 'shape.c', 'snow.c', 'stats.c', 
+                                     'statsrpt.c', 'subcatch.c', 'swmm5.c', 'swmm5_iface.c', 
+                                     'swmm5_wrap.c', 'table.c',  'toposort.c', 
+                                     'transect.c', 'treatmnt.c', 'xsect.c' ]]
+                           )
+
+
+EXAMPLES=["simple"]
+EXTS=["inp", "py"]
+EXTS.extend([x.upper() for x in EXTS])
+EXAMPLES=list(product(EXAMPLES,EXTS))
+package_data=[ "examples/"+x[0]+"/*."+x[1] for x in EXAMPLES]
+
+setup (name = 'SWMM5',
+       version = '0.2',
+       author      = "Assela Pathirana",
+       author_email = "assela@pathirana.net",
+       url         = "assela.pathirana.net",
+       description = """SWMM5  calls from python""",
+       ext_modules = [swmm5_module],
+       packages = ["swmm5"],
+       package_data={'swmm5': package_data}
+       
+       )

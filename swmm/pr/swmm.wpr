@@ -1,0 +1,9 @@
+#!wing
+#!version=4.0
+##################################################################
+# Wing IDE project file                                          #
+##################################################################
+[project attributes]
+proj.file-list = [loc('../README.txt'),
+                  loc('../setup.py')]
+proj.file-type = 'shared'

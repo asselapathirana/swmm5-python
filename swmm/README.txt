@@ -26,7 +26,7 @@ add any extra files (e.g. swmm5_test.py, swmm5example.inp) to script directive
 scripts= ['swmm5Example.inp', 'swmm5_test.py'] # these will be installed into the SCRIPTS directory. 
 #7. If everything works fine then
 7. Then run 
-python.exe setup.py bdist --format=wininst :: AT THE MOMENT THIS DOES NOT BUILD THE PACKAGE PROPERLY
+python.exe setup.py bdist --format=wininst 
 
 ( Edit ( create if not existing ) distutils.cfg located at C:\Python27\Lib\distutils\distutils.cfg to be:
 [build]
