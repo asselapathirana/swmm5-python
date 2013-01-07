@@ -3,11 +3,12 @@
 setup.py file for SWMM5 pyton library  - Assela Pathirana
 """
 
-from setuptools import setup, Extension
+from distutils.core import  setup, Extension
 from itertools import product
 
 with open("README.txt","r") as f:
     README=f.read()
+    
  
 swmm5_module = Extension('_swmm5',
                            sources=['swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 'datetime.c', 
@@ -20,7 +21,14 @@ swmm5_module = Extension('_swmm5',
                                      'routing.c', 'runoff.c', 'shape.c', 'snow.c', 'stats.c', 
                                      'statsrpt.c', 'subcatch.c', 'swmm5.c', 'swmm5_iface.c', 
                                      'swmm5_wrap.c', 'table.c',  'toposort.c', 
-                                     'transect.c', 'treatmnt.c', 'xsect.c' ]]
+                                     'transect.c', 'treatmnt.c', 'xsect.c' , 
+                                     # headers now
+                                     #"consts.h", "datetime.h", "enums.h", "error.h", 
+                                     #"findroot.h", "funcs.h", "globals.h", "hash.h", 
+                                     #"headers.h", "infil.h", "keywords.h", "lid.h", 
+                                     #"macros.h", "mathexpr.h", "mempool.h", "objects.h", 
+                                     #"odesolve.h", "swmm5.h", "swmm5_iface.h", "text.h"
+                                     ]]
                            )
 
 
@@ -29,9 +37,9 @@ EXTS=["inp", "py"]
 EXTS.extend([x.upper() for x in EXTS])
 EXAMPLES=list(product(EXAMPLES,EXTS))
 package_data=[ "examples/"+x[0]+"/*."+x[1] for x in EXAMPLES]
-
+print package_data
 NAME='SWMM5'
-VERSION='0.3.0.0'
+VERSION='0.3.2.0'
 SETUPNAME=NAME+"-"+VERSION
 LICENSE=u"GNU General Public License version 3"
 LONGDISC="""Python interface for the popular urban drainage model EPA-SWMM 5.0 engine. 
@@ -60,10 +68,10 @@ setup (name = NAME,
        version = VERSION,
        author      = "Assela Pathirana",
        author_email = "assela@pathirana.net",
-       description = """SWMM5  calls from python""",
-       ext_modules = [swmm5_module],
+       description = """SWMM5  calls from python""",       
        packages = ["swmm5"],
-       package_data={'swmm5': package_data},
+       package_data={'': package_data},
+       ext_modules = [swmm5_module],
        license=LICENSE,
        url=u"http://assela.pathirana.net/SWMM5-Python",
        download_url="http://swmm5-ea.googlecode.com/files/"+SETUPNAME+".zip",
