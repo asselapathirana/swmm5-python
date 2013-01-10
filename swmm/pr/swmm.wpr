@@ -12,5 +12,7 @@ proj.directory-list = [{'dirloc': loc('../swmm5'),
                         'watch_for_changes': True}]
 proj.file-list = [loc('../README.txt'),
                   loc('../setup.py'),
-                  loc('../swmm5/README_4_building.txt')]
+                  loc('../swmm5/README_4_building.txt'),
+                  loc('../swmm5/swmm5.py'),
+                  loc('../swmm5/swmm5_iface.c')]
 proj.file-type = 'shared'
