@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 //#include <windows.h>
-#include "swmm5.h"
+#include "./swmm5/swmm5.h"
 
 int    SWMM_Nperiods;                  // number of reporting periods
 int    SWMM_FlowUnits;                 // flow units code
@@ -255,12 +255,12 @@ int GetSwmmResult(int iType, int iIndex, int vIndex, int period, float* value)
                           SWMM_Nnodes*NodeVars +
                           SWMM_Nlinks*LinkVars + vIndex);
   }
-  else return 0;
+  else return 1; // changed this 0>1 to match rest of the EPA convention (e.g. epanet)
 
   // --- re-position the file and read the result
   fseek(Fout, offset, SEEK_SET);
   fread(value, RECORDSIZE, 1, Fout);
-  return 1;
+  return 0; // changed this 1>0 to match rest of the EPA convention (e.g. epanet)
 }
 
 

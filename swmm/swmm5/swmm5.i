@@ -9,8 +9,8 @@
  %cstring_bounded_output(char *value, 1024);
  %{
  /* Includes the header in the wrapper code */
- #include "swmm5_iface.h"
+ #include "swmm5_interface.h"
  %}
  
  /* Parse the header file to generate wrappers */
- %include "swmm5_iface.h"
+ %include "swmm5_interface.h"

@@ -9,9 +9,7 @@ from itertools import product
 with open("README.txt","r") as f:
     README=f.read()
     
- 
-swmm5_module = Extension('_swmm5',
-                           sources=['swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 'datetime.c', 
+csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 'datetime.c', 
                                      'dynwave.c', 'error.c', 'findroot.c', 'flowrout.c', 
                                      'forcmain.c', 'gage.c', 'gwater.c', 'hash.c', 'iface.c', 
                                      'infil.c', 'inflow.c', 'input.c', 'inputrpt.c', 'keywords.c', 
@@ -19,8 +17,8 @@ swmm5_module = Extension('_swmm5',
                                      'mathexpr.c', 'mempool.c', 'node.c', 'odesolve.c', 'output.c', 
                                      'project.c', 'qualrout.c', 'rain.c', 'rdii.c', 'report.c', 
                                      'routing.c', 'runoff.c', 'shape.c', 'snow.c', 'stats.c', 
-                                     'statsrpt.c', 'subcatch.c', 'swmm5.c', 'swmm5_iface.c', 
-                                     'swmm5_wrap.c', 'table.c',  'toposort.c', 
+                                     'statsrpt.c', 'subcatch.c', 'swmm5.c', 
+                                      'table.c',  'toposort.c', 
                                      'transect.c', 'treatmnt.c', 'xsect.c' , 
                                      # headers now
                                      #"consts.h", "datetime.h", "enums.h", "error.h", 
@@ -29,6 +27,9 @@ swmm5_module = Extension('_swmm5',
                                      #"macros.h", "mathexpr.h", "mempool.h", "objects.h", 
                                      #"odesolve.h", "swmm5.h", "swmm5_iface.h", "text.h"
                                      ]]
+csources.extend(['swmm5/swmm5_wrap.c','swmm5/swmm5_interface.c'])
+swmm5_module = Extension('_swmm5',
+                           sources=csources
                            )
 
 
@@ -39,7 +40,7 @@ EXAMPLES=list(product(EXAMPLES,EXTS))
 package_data=[ "examples/"+x[0]+"/*."+x[1] for x in EXAMPLES]
 print package_data
 NAME='SWMM5'
-VERSION='0.3.2.0'
+VERSION='0.3.3.0dev'
 SETUPNAME=NAME+"-"+VERSION
 LICENSE=u"GNU General Public License version 3"
 LONGDISC="""Python interface for the popular urban drainage model EPA-SWMM 5.0 engine. 

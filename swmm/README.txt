@@ -21,9 +21,22 @@ run a sample network
 should return 0 if everything is OK (according to to swmm convension)
 >>> print ret
 0
+>>>
 Now it is possible to retrive results. 
+Open the swmm results file
+>>> sw.OpenSwmmOutFile("swmm5.dat")
+0
+>>>
+How many time steps are there?
+>>> sw.cvar.SWMM_Nperiods
+360
+>>>
 Let's retrive rainfall in the system. 
-
+Systems rainfall at fifth timestep
+>>> ret,x=sw.GetSwmmResult(3,0,1,5)
+>>> print '%.2f' % x
+7.20
+>>>
 
 Acknowlegements:
 ----------------

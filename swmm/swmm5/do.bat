@@ -1,0 +1,1 @@
+c:\swig\swigwin-2.0.8\swig.exe -python   swmm5.i

@@ -4,15 +4,11 @@
 # Wing IDE project file                                          #
 ##################################################################
 [project attributes]
-proj.directory-list = [{'dirloc': loc('../swmm5'),
-                        'excludes': [u'swmm5.py'],
-                        'filter': '*.py',
+proj.directory-list = [{'dirloc': loc('..'),
+                        'excludes': [u'dist',
+                                     u'build'],
+                        'filter': '*',
                         'include_hidden': False,
                         'recursive': True,
                         'watch_for_changes': True}]
-proj.file-list = [loc('../README.txt'),
-                  loc('../setup.py'),
-                  loc('../swmm5/README_4_building.txt'),
-                  loc('../swmm5/swmm5.py'),
-                  loc('../swmm5/swmm5_iface.c')]
 proj.file-type = 'shared'
