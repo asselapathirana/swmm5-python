@@ -43,14 +43,7 @@ NAME='SWMM5'
 VERSION='0.3.3.0dev'
 SETUPNAME=NAME+"-"+VERSION
 LICENSE=u"GNU General Public License version 3"
-LONGDISC="""Python interface for the popular urban drainage model EPA-SWMM 5.0 engine. 
-SWMM5 is realeased by United States Environmental Protection Agency to public domain. 
-This python package is copyrighted by Assela Pathirana and released under %(lc)s. \n\n 
-README.txt\n
-----------\n
-%(rm)s\n
-----------\n
-""" % {"lc": LICENSE, "rm": README}
+LONGDISC="""%(rm)s""" % {"lc": LICENSE, "rm": README}
 CLASSIFY=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",

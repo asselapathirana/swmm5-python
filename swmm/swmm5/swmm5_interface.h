@@ -13,8 +13,17 @@ extern int    SWMM_Nlinks;             // number of drainage system links
 extern int    SWMM_Npolluts;           // number of pollutants tracked
 extern double SWMM_StartDate;          // start date of simulation
 extern int    SWMM_ReportStep;         // reporting time step (seconds)
+extern int    SWMM_Offset2IDS;                 // where the ID section start.
 
 int    RunSwmmDll(char* inpFile, char* rptFile, char* outFile);
 int    OpenSwmmOutFile(char* outFile);
 int    GetSwmmResult(int iType, int iIndex, int vIndex, int period, float* value);
 void   CloseSwmmOutFile(void);
+void   GetIDName(char* value);
+void InitGetIDName();
+
+extern  int SubcatchVars;               // number of subcatch reporting variables
+extern  int NodeVars;                   // number of node reporting variables
+extern  int LinkVars;                   // number of link reporting variables
+extern  int SysVars;                    // number of system reporting variables
+

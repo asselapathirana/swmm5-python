@@ -16,23 +16,28 @@ int    SWMM_Nlinks;                    // number of drainage system links
 int    SWMM_Npolluts;                  // number of pollutants tracked
 double SWMM_StartDate;                 // start date of simulation
 int    SWMM_ReportStep;                // reporting time step (seconds)
+int    SWMM_Offset2IDS;                 // where the ID section start.
 
 //int    RunSwmmExe(char* cmdLine);
 int    RunSwmmDll(char* inpFile, char* rptFile, char* outFile);
 int    OpenSwmmOutFile(char* outFile);
 int    GetSwmmResult(int iType, int iIndex, int vIndex, int period, float* value);
 void   CloseSwmmOutFile(void);
+int    countids;
 
 static const int SUBCATCH = 0;
 static const int NODE     = 1;
 static const int LINK     = 2;
 static const int SYS      = 3;
+
+int SubcatchVars;               // number of subcatch reporting variables
+int NodeVars;                   // number of node reporting variables
+int LinkVars;                   // number of link reporting variables
+int SysVars;                    // number of system reporting variables
+
 static const int RECORDSIZE = 4;       // number of bytes per file record
 
-static int SubcatchVars;               // number of subcatch reporting variables
-static int NodeVars;                   // number of node reporting variables
-static int LinkVars;                   // number of link reporting variables
-static int SysVars;                    // number of system reporting variables
+
 
 static FILE*  Fout;                    // file handle
 static int    StartPos;                // file position where results start
@@ -138,6 +143,7 @@ void ProcessMessages(void)
 }
 
 
+
 //-----------------------------------------------------------------------------
 int OpenSwmmOutFile(char* outFile)
 //-----------------------------------------------------------------------------
@@ -158,7 +164,8 @@ int OpenSwmmOutFile(char* outFile)
   }
 
   // --- read parameters from end of file
-  fseek(Fout, -5*RECORDSIZE, SEEK_END);
+  fseek(Fout, -6*RECORDSIZE, SEEK_END);
+  fread(&SWMM_Offset2IDS, RECORDSIZE, 1, Fout);
   fread(&offset0, RECORDSIZE, 1, Fout);
   fread(&StartPos, RECORDSIZE, 1, Fout);
   fread(&SWMM_Nperiods, RECORDSIZE, 1, Fout);
@@ -224,6 +231,29 @@ int OpenSwmmOutFile(char* outFile)
   return err;
 }
 
+void InitGetIDName()
+/** This function is strongly associated with GetIDName. See comments there. **/
+{
+    countids=0;
+    fseek(Fout,SWMM_Offset2IDS,SEEK_SET);
+}
+
+void GetIDName(char* value)
+/** This function is strongly associated with InitGetIDName. User should always call
+1. InitGetIDName
+2. This function the required number of times.
+3. It should also be made sure that no other calls are made that will change the file position untill (2)
+is completely finished.
+{
+**/
+{
+
+    int idsize;
+    fread(&idsize,RECORDSIZE,1,Fout);
+    fread(value,idsize,1,Fout);
+    value[idsize]='\0'; // null termination is needed. C needs spoonfeeding!
+
+}
 
 //-----------------------------------------------------------------------------
 int GetSwmmResult(int iType, int iIndex, int vIndex, int period, float* value)

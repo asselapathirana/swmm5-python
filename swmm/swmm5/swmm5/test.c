@@ -10,7 +10,7 @@
 // and swmm5.h, and linked with swmm5.dll and swmm5.lib.
 
 #include <stdio.h>
-#include "swmm5_iface.h"
+#include "../swmm5_interface.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
    char outfile[] = "tmp.out";
 
 // Check if a SWMM input file name is provided
-   if (argc < 2)
+   if (argc < 1)
    {
       printf("\nNo file name was provided.\n");
       return 0;
@@ -56,9 +56,21 @@ int main(int argc, char *argv[])
              GetSwmmResult(3, 0, 11, i, &z);
              printf("\n%6d  %8.2f  %8.2f  %8.2f", i, x, y, z);
          }
-         CloseSwmmOutFile();
+
       }
    }
+
+   InitGetIDName();
+   char* arr=(char*) malloc (500+1);
+   GetIDName(arr);
+   printf("\n ID:%s ",arr);
+      GetIDName(arr);
+   printf("\n ID:%s ",arr);
+      GetIDName(arr);
+   printf("\n ID:%s ",arr);
+      GetIDName(arr);
+   printf("\n ID:%s ",arr);
+   CloseSwmmOutFile();
    remove(rptfile);
    remove(outfile);
    return 0;

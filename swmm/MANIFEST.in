@@ -1,2 +1,2 @@
-include swmm5/*.h *.h
-include swmm5/xsect.dat
+include swmm5/swmm5/*.h swmm5/*.h swmm5/swmm5/*.c swmm5/*.c
+include swmm5/swmm5/xsect.dat

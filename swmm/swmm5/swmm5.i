@@ -6,11 +6,13 @@
  %apply long *OUTPUT { long *value };
  %apply float *OUTPUT { float *value };
  %apply double *OUTPUT { double *value };
- %cstring_bounded_output(char *value, 1024);
+ %cstring_bounded_output(char *value, 129);
  %{
  /* Includes the header in the wrapper code */
  #include "swmm5_interface.h"
- %}
+ #include "swmm5/error.h"
+ %} 
  
  /* Parse the header file to generate wrappers */
  %include "swmm5_interface.h"
+ %include "swmm5/error.h"
