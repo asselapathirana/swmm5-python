@@ -68,7 +68,7 @@ setup (name = NAME,
        ext_modules = [swmm5_module],
        license=LICENSE,
        url=u"http://assela.pathirana.net/SWMM5-Python",
-       download_url="http://swmm5-ea.googlecode.com/files/"+SETUPNAME+".zip",
+       #download_url="http://swmm5-ea.googlecode.com/files/"+SETUPNAME+".zip",
        long_description = LONGDISC, 
        classifiers=CLASSIFY
        )

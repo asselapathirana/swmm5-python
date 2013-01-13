@@ -144,7 +144,9 @@ One should always use the new interface. The old interface (below) is left only 
   
    
    
-:Example 3: Results::
+:Example 3: Results
+
+::
 
     >>> r=list(st.Results('NODE','J1', 4)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
     >>> print "\n".join( "%5.2f"% (i) for i in  r[0:10]) # Lets print the first 10 items.  
@@ -172,8 +174,12 @@ One should always use the new interface. The old interface (below) is left only 
      8.00
      ...
      0.00     
+     
 
-:Example 4: Pollutant Concentration::
+:Example 4: Pollutant Concentration
+
+::
+
     >>> wq.Subcatch()
     ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']    
     >>> r=list(wq.Results('SUBCATCH','S3', 6)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
@@ -191,12 +197,11 @@ One should always use the new interface. The old interface (below) is left only 
    >>> pass #print st.Subcatch(0,st.FLOW) # prints the first (index 0) subcatchments, flow 
    
    
-Water Quality
--------------
-
-Example 1: Pollutants
    
-:Legacy interface:
+Legacy interface
+----------------
+
+:Note: This is provided only for backward compatibility. Always use the new interface (above). 
 
 import swmm5 module
 

@@ -33,12 +33,14 @@ nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NOR
 
 Deploying Process
 ----------------
-* Do testing before deploying
-DO not do the following in a mingw environment:
+DO NOT do the following in a mingw environment:
+* Check for formatting
 python setup.py --long-description |rst2html  > tmp.html
+(or type README.txt |rst2html  > tmp.html
 (fix any errors, then ..)
-python -m doctest README.txt
-iterate these two until everyting is fixed. 
+* Do testing before deploying
+nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE"
+* iterate these two until everyting is fixed. 
 then ..
 python setup.py register
 python setup.py sdist
