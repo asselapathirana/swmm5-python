@@ -13,7 +13,7 @@ pip install nose
 
 windows:
 
-make sure wing ide (or any other ide is using this env.)
+make sure wing ide (or any other ide is using this env.) Also make sure to add . to PYTHONPATH in wingide
 
 after each change in c side
 
@@ -23,13 +23,13 @@ c:\swig\swigwin-2.0.8\swig.exe -python swmm5.i
 cd ..
 "c:\Program Files (x86)\CodeBlocks\MinGW\mingwvars.bat"
 python setup.py bdist
+copy build\lib.win32-2.7\_swmm5.pyd swmm5\.
 env1\Scripts\activate.bat
-python setup.py install
 
 
 Testing
 -------
-nosetests -v --with-doctest  --doctest-fixtures
+nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE"
 
 Deploying Process
 ----------------

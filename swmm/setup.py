@@ -40,7 +40,7 @@ EXAMPLES=list(product(EXAMPLES,EXTS))
 package_data=[ "examples/"+x[0]+"/*."+x[1] for x in EXAMPLES]
 print package_data
 NAME='SWMM5'
-VERSION='0.3.3.0dev'
+VERSION='0.4.0.0dev'
 SETUPNAME=NAME+"-"+VERSION
 LICENSE=u"GNU General Public License version 3"
 LONGDISC="""%(rm)s""" % {"lc": LICENSE, "rm": README}

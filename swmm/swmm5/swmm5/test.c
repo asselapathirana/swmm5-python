@@ -70,6 +70,10 @@ int main(int argc, char *argv[])
    printf("\n ID:%s ",arr);
       GetIDName(arr);
    printf("\n ID:%s ",arr);
+   printf("Error: %s",error_getMsg(66));
+
+   GetSwmmResult(1,0,4,0, &z);
+   printf("Result: %10.5f",z);
    CloseSwmmOutFile();
    remove(rptfile);
    remove(outfile);

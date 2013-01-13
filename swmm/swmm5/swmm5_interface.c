@@ -17,6 +17,7 @@ int    SWMM_Npolluts;                  // number of pollutants tracked
 double SWMM_StartDate;                 // start date of simulation
 int    SWMM_ReportStep;                // reporting time step (seconds)
 int    SWMM_Offset2IDS;                 // where the ID section start.
+int    SWMM5_VERSION;                    //version integer.
 
 //int    RunSwmmExe(char* cmdLine);
 int    RunSwmmDll(char* inpFile, char* rptFile, char* outFile);
@@ -150,6 +151,7 @@ int OpenSwmmOutFile(char* outFile)
 {
   int magic1, magic2, errCode, offset, offset0, version;
   int err;
+  // if the file is already open, do not open it!
 
   // --- open the output file
   Fout = fopen(outFile, "rb");
@@ -192,6 +194,7 @@ int OpenSwmmOutFile(char* outFile)
 
   // --- otherwise read additional parameters from start of file
   fread(&version, RECORDSIZE, 1, Fout);
+  SWMM5_VERSION=version;
   fread(&SWMM_FlowUnits, RECORDSIZE, 1, Fout);
   fread(&SWMM_Nsubcatch, RECORDSIZE, 1, Fout);
   fread(&SWMM_Nnodes, RECORDSIZE, 1, Fout);
@@ -232,10 +235,25 @@ int OpenSwmmOutFile(char* outFile)
 }
 
 void InitGetIDName()
-/** This function is strongly associated with GetIDName. See comments there. **/
+/** This function is strongly associated with GetIDName, GetInt. See comments there. **/
 {
     countids=0;
     fseek(Fout,SWMM_Offset2IDS,SEEK_SET);
+}
+
+int GetInt()
+{
+    /** This function is strongly associated with GetIDName.
+    User should always call
+    1. InitGetIDName
+    2. GetIDName function the required number of times.
+    3. This function three required number of times.
+    3. It should also be made sure that no other calls are made that will change the file position untill (2)
+    is completely finished.
+**/
+    int unit;
+    fread(&unit,RECORDSIZE,1,Fout);
+    return unit;
 }
 
 void GetIDName(char* value)

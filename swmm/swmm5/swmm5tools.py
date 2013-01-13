@@ -1,5 +1,10 @@
 import swmm5
+from collections import OrderedDict
 
+
+def checkError(ret):
+    if ret > 1: # not 0, or minus
+        raise SWMM5Error(ret)    
 
 class SWMM5Error(Exception):
     
@@ -14,18 +19,37 @@ class SWMM5Error(Exception):
     def __str__(self):
         return repr(self.value)+": "+self.msg
     
+FILEOPENED=False
 
 class SWMM5Simulation(object):
     """Handles the communication with underlying C routines to run swmm5 and read simulation results."""
     
-    def __enter__(self):
-        return self
-    
-    def __exit__(self, type, value, traceback):
-        try:
-            swmm5.CloseSwmmOutFile()
-        except:
-            pass
+    class _SWMM5Results_file_open(object):
+        
+        
+        def __init__(self,outFile):
+            global FILEOPENED
+            self.outFile=outFile
+            
+        def __enter__(self):
+            global FILEOPENED
+            if (not FILEOPENED):
+                checkError(swmm5.OpenSwmmOutFile(self.outFile))
+                FILEOPENED=True
+                self.CLOSE=True
+            else:
+                self.CLOSE=False
+            return self
+        
+        def __exit__(self, type, value, traceback):
+            global FILEOPENED
+            try:
+                if(self.CLOSE):
+                    swmm5.CloseSwmmOutFile()
+                    FILEOPENED=False
+            except:
+                pass
+            
     
     def __init__(self, inpFile, rptFile=None, outFile=None):
         #dc=dict.__init__(self)
@@ -34,122 +58,129 @@ class SWMM5Simulation(object):
         self.inpFile=inpFile
         self.rptFile=rptFile
         self.outFile=outFile
-        self.initialize_swmm()
+        self.SWMM5run()
         self._setvariables()
 
     def __addvar(self,val):
         self._variables.append(val)
+        
+    def SWMM5_Version(self):
+        v=str(self.SWMM5_VERSION)
+        return v[0]+"."+v[1]+"."+v[2:]
     
     def _setvariables(self):
-        swmm5.InitGetIDName()
-        self._ids={
-                        "SUBCATCH":[0,[swmm5.GetIDName() for x in range(swmm5.cvar.SWMM_Nsubcatch)]],
-                        "NODE":[1,[swmm5.GetIDName() for x in range(swmm5.cvar.SWMM_Nnodes)]],
-                        "LINK":[2,[swmm5.GetIDName() for x in range(swmm5.cvar.SWMM_Nlinks)]],
-                        "SYS":[3,[]]}
-        
-        #self._variables["SUBCATCH"][1].append(["rainfall (in/hr or mm/hr)"],[]])
-
-        """
-        0 for rainfall (in/hr or mm/hr)
-        1 for snow depth (in or mm)
-        2 for evaporation + infiltration losses (in/hr or mm/hr)
-        3 for runoff rate (flow units)
-        4 for groundwater outflow rate (flow units)
-        5 for groundwater water table elevation (ft or m)
-        6 for runoff concentration of first pollutant
-        ...  
-        
-        5 + N for runoff concentration of N-th pollutant.  
-        
-         
-       Number of node variables (currently 6 + number of pollutants)  
-        
-       Code number of each node variable:  
-        
-         
-        0 for depth of water above invert (ft or m)
-        1 for hydraulic head (ft or m)
-        2 for volume of stored + ponded water (ft3 or m3)
-        3 for lateral inflow (flow units)
-        4 for total inflow (lateral + upstream) (flow units)
-        5 for flow lost to flooding (flow units)
-        6 for concentration of first pollutant
-        ...  
-        
-        5 + N for concentration of N-th pollutant.  
-        
-         
-       Number of link variables (currently 5 + number of pollutants)  
-        
-       Code number of each link variable:  
-        
-         
-        0 for flow rate (flow units)
-        1 for flow depth (ft or m)
-        2 for flow velocity (ft/s or m/s)
-        3 for Froude number
-        4 for capacity (fraction of conduit filled)
-        5 for concentration of first pollutant
-        ...  
-        
-        4 + N for concentration of N-th pollutant.  
-        
-         
-       Number of system-wide variables (currently 14)  
-        
-       Code number of each system-wide variable:  
-        
-         
-        0 for air temperature (deg. F or deg. C)
-        1 for rainfall (in/hr or mm/hr)
-        2 for snow depth (in or mm)
-        3 for evaporation + infiltration loss rate (in/hr or mm/hr)
-        4 for runoff flow (flow units)
-        5 for dry weather inflow (flow units)
-        6 for groundwater inflow (flow units)
-        7 for RDII inflow (flow units)
-        8 for user supplied direct inflow (flow units)
-        9 for total lateral inflow (sum of variables 4 to 8) (flow units)
-        10 for flow lost to flooding (flow units)
-        11 for flow leaving through outfalls (flow units)
-        12 for volume of stored water (ft3 or m3)
-        13 for evaporation rate (in/day or mm/day)   
-        """
-
-    def initialize_swmm(self):
-        self.checkError(swmm5.RunSwmmDll(self.inpFile,self.rptFile,self.outFile))
-        self.checkError(swmm5.OpenSwmmOutFile(self.outFile))
+        with self._SWMM5Results_file_open(self.outFile):
+            UNITS=["mg/l","ug/l","counts/l"]
+            swmm5.InitGetIDName()
+            self._ids=OrderedDict()
+            d={swmm5.GetIDName():x for x in range(swmm5.cvar.SWMM_Nsubcatch)}
+            self._ids["SUBCATCH"  ]=[0,OrderedDict(sorted(d.items(), key=lambda t: t[1]))]
+            d={swmm5.GetIDName():x for x in range(swmm5.cvar.SWMM_Nnodes)}
+            self._ids["NODE"      ]=[1,OrderedDict(sorted(d.items(), key=lambda t: t[1]))]
+            d={swmm5.GetIDName():x for x in range(swmm5.cvar.SWMM_Nlinks)}
+            self._ids["LINK"      ]=[2,OrderedDict(sorted(d.items(), key=lambda t: t[1]))]
+            self._ids["SYS"       ]=[3,OrderedDict({"SYS":0})]
+            self._pollutants       =[swmm5.GetIDName() for x in range(swmm5.cvar.SWMM_Npolluts)]
+            self._pollunits        =[UNITS[swmm5.GetInt()] for x in range(swmm5.cvar.SWMM_Npolluts)]
        
-    def checkError(self,ret):
-        if ret: # not 0
-            raise SWMM5Error(ret)          
+            # now build a list of available outputs for each entity. 
+        su=[        
+        "Rainfall (in/hr or mm/hr)",
+        "Snow depth (in or mm)",
+        "Evaporation + infiltration losses (in/hr or mm/hr)",
+        "Runoff rate (flow units)",
+        "Groundwater outflow rate (flow units)",
+        "Groundwater water table elevation (ft or m)"]
+        su.extend(["Runoff concentration of %s (%s)" % x for x in zip(self._pollutants, self._pollunits)])
+        no=[
+        "Depth of water above invert (ft or m)",
+        "Hydraulic head (ft or m)",
+        "Volume of stored + ponded water (ft3 or m3)",
+        "Lateral inflow (flow units)",
+        "Total inflow (lateral + upstream) (flow units)",
+        "Flow lost to flooding (flow units)"]
+        no.extend(["Concentration of %s (%s)" % x for x in zip(self._pollutants, self._pollunits)])
+        li=[
+        "Flow rate (flow units)",
+        "Flow depth (ft or m)",
+        "Flow velocity (ft/s or m/s)",
+        "Froude number",
+        "Capacity (fraction of conduit filled)"]
+        li.extend(["Concentration of %s (%s)" % x for x in zip(self._pollutants, self._pollunits)])
+        sy=[
+        "Air temperature (deg. F or deg. C)",
+        "Rainfall (in/hr or mm/hr)",
+        "Snow depth (in or mm)",
+        "Evaporation + infiltration loss rate (in/hr or mm/hr)",
+        "Runoff flow (flow units)",
+        "Dry weather inflow (flow units)",
+        "Groundwater inflow (flow units)",
+        "RDII inflow (flow units)",
+        "User supplied direct inflow (flow units)",
+        "Total lateral inflow (sum of variables 4 to 8) (flow units)",
+        "Flow lost to flooding (flow units)",
+        "Flow leaving through outfalls (flow units)",
+        "Volume of stored water (ft3 or m3)",
+        "Evaporation rate (in/day or mm/day)"]     
+      
+        self._variables=OrderedDict()
+        self._variables["SUBCATCH"  ]=su
+        self._variables["NODE"      ]=no
+        self._variables["LINK"      ]=li
+        self._variables["SYS"       ]=sy
+
+       
+
+    def SWMM5run(self):
+        checkError(swmm5.RunSwmmDll(self.inpFile,self.rptFile,self.outFile))
+
+       
+      
     
-    def __getattribute__(self, name):
-        if(hasattr(swmm5.cvar,name)): # search c library. 
-            return getattr(swmm5.cvar,name)
-        else:
-            # Default behaviour
-            return object.__getattribute__(self, name)   
+    def __getattribute__(self, name): 
+        try:
+            return object.__getattribute__(self, name)
+        except:
+            pass
+        with self._SWMM5Results_file_open(self.outFile):
+            if(hasattr(swmm5.cvar,name)): # search c library. 
+                return getattr(swmm5.cvar,name)
+        raise AttributeError("The attribute %s not found with this class or underlying c interface" % name)
+
+        # Default behaviour
+        return object.__getattribute__(self, name)   
         
     def entityList(self):
         return self._ids.keys()
+    
+    def varList(self,entity):
+        return self._variables[entity]
         
-    def Subcatch(self,index=0):
-        return self._ids["SUBCATCH"][1]
-    def Node(self,index=0):
-        return self._ids["NODE"][1]
-    def Link(self,index=0):
-        return self._ids["LINK"][1]
-    def Sys(self,index=0):
-        return self._ids["SYS"][1] 
+    def Subcatch(self):
+        return self._ids["SUBCATCH"][1].keys()
+    def Node(self):
+        return self._ids["NODE"][1].keys()
+    def Link(self):
+        return self._ids["LINK"][1].keys()
+    def Sys(self):
+        return self._ids["SYS"][1].keys()
+    def Pollutants(self,index=0):
+        return self._pollutants
     
+    def Results(self,entity,id,variable):
+       with self._SWMM5Results_file_open(self.outFile):
+            # [swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i)[1] for i in range(self.SWMM_Nperiods)]
+            for i in range(self.SWMM_Nperiods):
+                yield swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i)[1] 
+            #return swmm5.GetSwmmResult(1,0,4,0)
+    def Flow_Units(self):
+        return ["CFS", "GPM", "MGD" , "CMS", "LPS", "LPD" ][self.SWMM_FlowUnits]
     
-     
-
     
 if __name__=="__main__":
-    with SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp") as st:
-        print st.SWMM_Nperiods
+    ss=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+    print ss.SWMM_Nperiods
+    print list(ss.Results('NODE','J1', 4))
+    print ss.SWMM5_Version()
     
     
