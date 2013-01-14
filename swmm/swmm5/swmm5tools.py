@@ -1,5 +1,8 @@
 import swmm5
 from collections import OrderedDict
+from tempfile import mkstemp
+from os.path import basename, dirname
+from  os import close, remove
 
 
 def checkError(ret):
@@ -51,10 +54,17 @@ class SWMM5Simulation(object):
                 pass
             
     
-    def __init__(self, inpFile, rptFile=None, outFile=None):
+    def __init__(self, inpFile, rptFile=None, outFile=None, clean=True):
         #dc=dict.__init__(self)
-        if not rptFile: rptFile=inpFile[0:-3]+"rpt"
-        if not outFile: outFile=inpFile[0:-3]+"dat"
+        self._clean=clean
+        bn=basename(inpFile)
+        dn=dirname(inpFile)
+        if not rptFile: 
+            h,rptFile=mkstemp(prefix=bn[0:-3], suffix="rpt")
+            close(h)
+        if not outFile: 
+            h,outFile=mkstemp(prefix=bn[0:-3], suffix="dat")
+            close(h)
         self.inpFile=inpFile
         self.rptFile=rptFile
         self.outFile=outFile
@@ -63,6 +73,19 @@ class SWMM5Simulation(object):
 
     def __addvar(self,val):
         self._variables.append(val)
+        
+    def __del__(self):
+        if (self._clean):
+            self.clean()
+
+    def clean(self):
+        """Delete all the files created by swmm run"""
+        remove(self.rptFile)
+        remove(self.outFile)
+        #print "cleaning up."
+
+            
+        
         
     def SWMM5_Version(self):
         v=str(self.SWMM5_VERSION)
