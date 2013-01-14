@@ -30,6 +30,11 @@ env1\Scripts\activate.bat
 Testing
 -------
 nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE"
+Above will ignore test_multithreading.py. 
+To run that
+PYTHONPATH=.
+python tests\test_multithreading.py
+
 
 Deploying Process
 ----------------

@@ -15,7 +15,8 @@ class testSWMM5(unittest.TestCase):
         g=ss.Results('SYS','SYS', 1)
         [g.next() for x in range(8)]
         self.assertAlmostEqual(g.next(),7.600000858306885)
-        self.assertAlmostEqual(g.next(),8.000000000000000)        
+        self.assertAlmostEqual(g.next(),8.000000000000000)    
+        ss.getFiles()
         
         return
     def runSWMM2(self):
@@ -28,6 +29,7 @@ class testSWMM5(unittest.TestCase):
         self.assertAlmostEqual(g.next(),9.937597274780273)
         self.assertAlmostEqual(g.next(),9.9885835647583)
         self.assertAlmostEqual(g.next(),9.995906829833984)
+        ss.getFiles()
         return        
     
     @nottest # nose should not run this test by default!
@@ -36,8 +38,8 @@ class testSWMM5(unittest.TestCase):
         import multiprocessing
         from sys import stdout
         jobs = []
-        num=100
-        for i in range(num):
+        global number_of_processes
+        for i in range(number_of_processes):
             p = multiprocessing.Process(target=self.runSWMM1)
             jobs.append(p)
             p.start()    
@@ -45,7 +47,7 @@ class testSWMM5(unittest.TestCase):
             jobs.append(p)
             p.start()  
         print "Job List:", jobs
-        for i in range(num):
+        for i in range(number_of_processes):
             jobs[i].join()
         sleep(5)
         stdout.flush()
@@ -53,6 +55,8 @@ class testSWMM5(unittest.TestCase):
         
  
 if __name__=="__main__":
+    number_of_processes=20
+    print "using  number_of_processes: ", number_of_processes
     unittest.main()
     
     

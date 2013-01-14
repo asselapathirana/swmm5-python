@@ -60,10 +60,10 @@ class SWMM5Simulation(object):
         bn=basename(inpFile)
         dn=dirname(inpFile)
         if not rptFile: 
-            h,rptFile=mkstemp(prefix=bn[0:-3], suffix="rpt")
+            h,rptFile=mkstemp(prefix=bn[0:-4], suffix=".rpt")
             close(h)
         if not outFile: 
-            h,outFile=mkstemp(prefix=bn[0:-3], suffix="dat")
+            h,outFile=mkstemp(prefix=bn[0:-4], suffix=".dat")
             close(h)
         self.inpFile=inpFile
         self.rptFile=rptFile
@@ -189,6 +189,8 @@ class SWMM5Simulation(object):
         return self._ids["SYS"][1].keys()
     def Pollutants(self,index=0):
         return self._pollutants
+    def getFiles(self):
+        return [self.inpFile, self.rptFile, self.outFile]
     
     def Results(self,entity,id,variable):
        with self._SWMM5Results_file_open(self.outFile):

@@ -194,11 +194,34 @@ One should always use the new interface. The old interface (below) is left only 
     14.11
     14.71
     15.24
-   >>> pass #print st.Subcatch(0,st.FLOW) # prints the first (index 0) subcatchments, flow 
+
    
+:Example 5: Tracking output files
+
+::
+
+    >>> simtemp=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+    >>> f=simtemp.getFiles()
+    >>> f
+    ['swmm5/examples/simple/swmm5Example.inp', '...swmm5Example....rpt', '...swmm5Example....dat']
+    >>> from os.path import isfile
+    >>> [isfile(x) for x in f] # do they exist in the operating system. 
+    [True, True, True]
+    >>> simtemp.clean()
+    >>> [isfile(x) for x in f] # do they exist in the operating system. 
+    [True, False, False]
+    
+Thread Safety
+-------------
+Calling SWMM5Simulation with input file as only argument (SWMM5Simulation will 
+choose the report and binary output file names) and subsequent use of the object 
+to retreive results is threadsafe to the degree I could verify. 
+
+There is a test ``test_multithreading.py`` in the test directory, which can be run to test this to some degree. It should be run as ``python test_multithreading.py``. 
+
+
    
-   
-Legacy interface
+Legacy interface 
 ----------------
 
 :Note: This is provided only for backward compatibility. Always use the new interface (above). 
