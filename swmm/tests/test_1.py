@@ -26,6 +26,7 @@ class testSWMM5(unittest.TestCase):
     def test_SWMM5Simulation_should_have_attributes(self):
         st=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
         st.SWMM_Nperiods
+        
 
         
 if __name__=="__main__":

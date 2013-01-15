@@ -15,10 +15,7 @@ class SWMM5Error(Exception):
     
     def __init__(self,value):
         self.value=value
-        try:
-            self.msg=swmm5.error_getMsg(value)
-        except:
-            self.msg=u"Unknown swmm error."
+        self.msg=swmm5.error_getMsg(value)
     def __str__(self):
         return repr(self.value)+": "+self.msg
     
@@ -170,8 +167,6 @@ class SWMM5Simulation(object):
                 return getattr(swmm5.cvar,name)
         raise AttributeError("The attribute %s not found with this class or underlying c interface" % name)
 
-        # Default behaviour
-        return object.__getattribute__(self, name)   
         
     def entityList(self):
         return self._ids.keys()
@@ -204,8 +199,8 @@ class SWMM5Simulation(object):
     
 if __name__=="__main__":
     ss=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
-    print ss.SWMM_Nperiods
-    print list(ss.Results('NODE','J1', 4))
-    print ss.SWMM5_Version()
+    #print ss.SWMM_Nperiods
+    #print list(ss.Results('NODE','J1', 4))
+    #print ss.SWMM5_Version()
     
     

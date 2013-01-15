@@ -44,7 +44,8 @@ python setup.py --long-description |rst2html  > tmp.html
 (or type README.txt |rst2html  > tmp.html
 (fix any errors, then ..)
 * Do testing before deploying
-nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE"
+nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE" --with-coverage
+(all tests should pass. Code coverate for swmm5tools should be 100%)
 * iterate these two until everyting is fixed. 
 then ..
 python setup.py register
