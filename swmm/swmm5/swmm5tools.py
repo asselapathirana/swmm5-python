@@ -71,17 +71,13 @@ class SWMM5Simulation(object):
     def __addvar(self,val):
         self._variables.append(val)
         
-    def __del__(self):
-        if (self._clean):
-            self.clean()
 
     def clean(self):
         """Delete all the files created by swmm run"""
         remove(self.rptFile)
         remove(self.outFile)
         #print "cleaning up."
-
-            
+          
         
         
     def SWMM5_Version(self):
@@ -199,7 +195,7 @@ class SWMM5Simulation(object):
     
 if __name__=="__main__":
     ss=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
-    #print ss.SWMM_Nperiods
+    print ss.SWMM_Nperiods
     #print list(ss.Results('NODE','J1', 4))
     #print ss.SWMM5_Version()
     

@@ -161,7 +161,7 @@ One should always use the new interface. The old interface (below) is left only 
     64.62
     83.10
     >>> r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly. 
-    >>> print "\n".join(["%5.2f"% (i) for i in  r]) 
+    >>> print "\n".join(["%5.2f"% (i) for i in  r])  #doctest: +ELLIPSIS
      0.00
      0.00
      0.00
@@ -173,7 +173,7 @@ One should always use the new interface. The old interface (below) is left only 
      7.60
      8.00
      ...
-     0.00     
+     0.00
      
 
 :Example 4: Pollutant Concentration
@@ -181,7 +181,7 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> wq.Subcatch()
-    ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']    
+    ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
     >>> r=list(wq.Results('SUBCATCH','S3', 6)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
     >>> print "\n".join( "%5.2f"% (i) for i in  r[0:10]) # Lets print the first 10 items.  
      0.00
@@ -202,7 +202,7 @@ One should always use the new interface. The old interface (below) is left only 
 
     >>> simtemp=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
     >>> f=simtemp.getFiles()
-    >>> f
+    >>> f #doctest: +ELLIPSIS
     ['swmm5/examples/simple/swmm5Example.inp', '...swmm5Example....rpt', '...swmm5Example....dat']
     >>> from os.path import isfile
     >>> [isfile(x) for x in f] # do they exist in the operating system. 

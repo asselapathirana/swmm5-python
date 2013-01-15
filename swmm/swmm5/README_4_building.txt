@@ -29,10 +29,16 @@ env1\Scripts\activate.bat
 
 Testing
 -------
-nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE"  --stop
-Above will ignore test_multithreading.py. 
+Try
+nosetests -v --with-doctest  --doctest-ext=txt 
+IF that fails 
+try: 
+python -m doctest  README.txt -v
+python tests\test_1.py -v 
+
+None of the above (nose of alternative ways) will not run test_multithreading.py. 
 To run that
-PYTHONPATH=.
+set PYTHONPATH=.
 python tests\test_multithreading.py
 
 
