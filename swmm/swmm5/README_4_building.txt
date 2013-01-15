@@ -13,7 +13,7 @@ pip install nose
 
 windows:
 
-make sure wing ide (or any other ide is using this env.) Also make sure to add . to PYTHONPATH in wingide
+make sure to add . to PYTHONPATH in wingide
 
 after each change in c side
 
@@ -29,7 +29,7 @@ env1\Scripts\activate.bat
 
 Testing
 -------
-nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE"
+nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE"  --stop
 Above will ignore test_multithreading.py. 
 To run that
 PYTHONPATH=.
