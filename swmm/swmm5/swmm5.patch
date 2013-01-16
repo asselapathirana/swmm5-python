@@ -1,0 +1,11 @@
+*** swmm5/text.h	2013-01-10 19:09:55.593353600 +0100
+--- swmm5.2/text.h	2013-01-16 16:21:09.195036100 +0100
+***************
+*** 30,32 ****
+  #define FMT05 "\n"
+! #define FMT06 "\n o  Retrieving project data"
+  #define FMT07 "\n o  Writing output report"
+--- 30,32 ----
+  #define FMT05 "\n"
+! #define FMT06 "" /*This printing is unnecessary. "\n o  Retrieving project data"*/
+  #define FMT07 "\n o  Writing output report"

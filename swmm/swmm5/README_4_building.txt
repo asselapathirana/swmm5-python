@@ -51,7 +51,7 @@ python setup.py --long-description |rst2html  > tmp.html
 (fix any errors, then ..)
 * Do testing before deploying
 nosetests -v --with-doctest  --doctest-ext=txt --doctest-options "+ELLIPSIS,+NORMALIZE_WHITESPACE" --with-coverage
-(all tests should pass. Code coverate for swmm5tools should be 100%)
+(all tests should pass. Code coverate for swmm5tools should be nearly 100%)
 * iterate these two until everyting is fixed. 
 then ..
 python setup.py register
@@ -63,4 +63,11 @@ python setup.py bdist_wininst
 Now to go cygwin and upload
 
 (last two commands again with "upload --sign")
+
+New SWMM5.0 Version
+-------------------
+Replace all the files in swmm5/swmm5 directory with new swmm
+patch text.h file
+-"\n o  Retrieving project data"
++""
 
