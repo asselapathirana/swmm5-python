@@ -85,7 +85,7 @@ One should always use the new interface. The old interface (below) is left only 
    ['SYS']
    >>> st.Pollutants() # no pollutants in this file. 
    []
-   >>> wq=SWMM5Simulation("swmm5\examples\waterquality\Example5-EXP.inp")
+   >>> wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP.inp")
    >>> wq.SWMM_Npolluts
    1
    >>> wq.Pollutants() # no pollutants in this file. 
