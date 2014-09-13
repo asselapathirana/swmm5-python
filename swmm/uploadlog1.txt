@@ -1,0 +1,29 @@
+['examples/simple/*.inp', 'examples/simple/*.py', 'examples/simple/*.INP', 'examples/simple/*.PY']
+running bdist_wininst
+running build
+running build_py
+running build_ext
+installing to build\bdist.win32\wininst
+running install_lib
+creating build\bdist.win32\wininst
+creating build\bdist.win32\wininst\PLATLIB
+creating build\bdist.win32\wininst\PLATLIB\swmm5
+creating build\bdist.win32\wininst\PLATLIB\swmm5\examples
+creating build\bdist.win32\wininst\PLATLIB\swmm5\examples\simple
+copying build\lib.win32-2.7\swmm5\examples\simple\swmm5Example.inp -> build\bdist.win32\wininst\PLATLIB\swmm5\examples\simple
+copying build\lib.win32-2.7\swmm5\swmm5.py -> build\bdist.win32\wininst\PLATLIB\swmm5
+copying build\lib.win32-2.7\swmm5\swmm5tools.py -> build\bdist.win32\wininst\PLATLIB\swmm5
+copying build\lib.win32-2.7\swmm5\__init__.py -> build\bdist.win32\wininst\PLATLIB\swmm5
+copying build\lib.win32-2.7\_swmm5.pyd -> build\bdist.win32\wininst\PLATLIB
+running install_egg_info
+Writing build\bdist.win32\wininst\PLATLIB\swmm5-1.0.0.1dev-py2.7.egg-info
+creating 'c:\users\apa\appdata\local\temp\tmp2jzidm.zip' and adding '.' to it
+adding 'PLATLIB\swmm5-1.0.0.1dev-py2.7.egg-info'
+adding 'PLATLIB\_swmm5.pyd'
+adding 'PLATLIB\swmm5\swmm5.py'
+adding 'PLATLIB\swmm5\swmm5tools.py'
+adding 'PLATLIB\swmm5\__init__.py'
+adding 'PLATLIB\swmm5\examples\simple\swmm5Example.inp'
+removing 'build\bdist.win32\wininst' (and everything under it)
+running upload
+Submitting dist\swmm5-1.0.0.1dev.win32-py2.7.exe to http://pypi.python.org/pypi
