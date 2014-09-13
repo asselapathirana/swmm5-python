@@ -2,6 +2,9 @@
 /.hg
 #env1 ignore
 /swmm/env1
+#ignore whl files
+*.whl
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
