@@ -9,6 +9,11 @@ version 1.0.0.1 first production (non-beta) release.
 
 version 1.1.0.1 version with new SWMM 5.1 version (instead of SWMM 5.0)
 
+version 1.1.0.2 SWMM 5.1 features fully implemented and some bugs fixed. 
+
+version 1.1.0.3 Bug fix. 
+Until now the library returned a results time series shifted by one reporting period. (The first value returned was junk and the last value is not returned.) Now this is fixed. But this means, old calling interfaces where users have compensated for this bug, have to be changed!
+
 
 
 Installation:
@@ -179,8 +184,7 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> r=list(st.Results('NODE','J1', 4)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  
-     0.00
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:9])) # Lets print the first 9 items.  
      0.00
      0.00
      0.03
@@ -192,7 +196,6 @@ One should always use the new interface. The old interface (below) is left only 
     83.10
     >>> r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly. 
     >>> print ("\n".join(["%5.2f"% (i) for i in  r]))  #doctest: +ELLIPSIS
-     0.00
      0.00
      0.00
      7.20
@@ -214,8 +217,7 @@ One should always use the new interface. The old interface (below) is left only 
     ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
 	
     >>> r=list(wq.Results('SUBCATCH','S3', 8)) # TSS out of catchment 'S3'. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF
-     0.00
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:9])) # Lets print the first 9 items.  #doctest: +REPORT_NDIFF
      0.00
      0.00
     10.00
@@ -232,8 +234,7 @@ One should always use the new interface. The old interface (below) is left only 
     ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'O1']
 	
     >>> r=list(wq.Results('NODE','J3', 6)) # TSS out of Node 'J3'. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF
-     0.00
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:9])) # Lets print the first 9 items.  #doctest: +REPORT_NDIFF
     10.00
     10.00
     10.00
@@ -248,8 +249,7 @@ One should always use the new interface. The old interface (below) is left only 
     ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11']
 	
     >>> r=list(wq.Results('LINK','C11', 5)) # TSS out of Link 'C11'. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r)) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF +ELLIPSIS
-     0.00
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r))   #doctest: +REPORT_NDIFF +ELLIPSIS
      0.00
      1.56
      3.86
@@ -258,6 +258,7 @@ One should always use the new interface. The old interface (below) is left only 
     10.38
     ...
     47.58
+    47.57
 
    
 :Example 5: Tracking output files

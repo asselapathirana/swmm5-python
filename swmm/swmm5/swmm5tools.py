@@ -189,7 +189,7 @@ class SWMM5Simulation(object):
         with self._SWMM5Results_file_open(self.outFile):
             # [swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i)[1] for i in range(self.SWMM_Nperiods)]
             for i in range(self.SWMM_Nperiods):
-                yield swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i)[1]
+                yield swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i+1)[1]
             #return swmm5.GetSwmmResult(1,0,4,0)
     def Flow_Units(self):
         return ["CFS", "GPM", "MGD" , "CMS", "LPS", "LPD" ][self.SWMM_FlowUnits]
