@@ -39,7 +39,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="$(if [ "$OSTYPE" "==" "cygwin" ]; then cygpath -u 'E:\learn\swmm5-python\swmm\env1'; else echo '/E/learn/swmm5-python/swmm/env1'; fi;)"
+VIRTUAL_ENV="$(if [ "$OSTYPE" "==" "cygwin" ]; then cygpath -u 'e:\learn\swmm5-python\swmm\env1'; else echo '/e/learn/swmm5-python/swmm/env1'; fi;)"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

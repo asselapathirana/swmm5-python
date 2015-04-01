@@ -11,11 +11,14 @@ import os
 with open("README.txt","r") as f:
     README=f.read()
     
-csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 'datetime.c', 
-                                     'dynwave.c', 'error.c', 'findroot.c', 'flowrout.c', 
-                                     'forcmain.c', 'gage.c', 'gwater.c', 'hash.c', 'iface.c', 
+csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 
+									 'datetime.c', 'dwflow.c',
+                                     'dynwave.c', 'error.c', 'exfil.c','findroot.c', 'flowrout.c', 
+                                     'forcmain.c', 'gage.c', 'gwater.c', 'hash.c', 
+									 'hotstart.c','iface.c', 
                                      'infil.c', 'inflow.c', 'input.c', 'inputrpt.c', 'keywords.c', 
-                                     'kinwave.c', 'landuse.c', 'lid.c', 'link.c', 'massbal.c', 
+                                     'kinwave.c', 'landuse.c', 'lid.c', 'lidproc.c',
+									 'link.c', 'massbal.c', 
                                      'mathexpr.c', 'mempool.c', 'node.c', 'odesolve.c', 'output.c', 
                                      'project.c', 'qualrout.c', 'rain.c', 'rdii.c', 'report.c', 
                                      'routing.c', 'runoff.c', 'shape.c', 'snow.c', 'stats.c', 
@@ -31,7 +34,9 @@ csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 'd
                                      ]]
 csources.extend(['swmm5/swmm5_wrap.c','swmm5/swmm5_interface.c'])
 swmm5_module = Extension('_swmm5',
-                           sources=csources
+                           sources=csources,
+						     #extra_compile_args=['/openmp'],
+                             #extra_link_args=['/openmp']
                            )
 
 

@@ -22,7 +22,7 @@ if not %good%=="true" (
 )
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set swig=c:\swig\swigwin-3.0.2\swig.exe
+set swig=c:\swig\swigwin-3.0.5\swig.exe
 set loc=%~dp0
 set py3=3.3.5.0
 set py2=2.7.6.4
@@ -103,13 +103,13 @@ cd %loc%\%name% || goto ERROR
 echo on
 %swig% -python %name%.i || goto ERROR
 cd ..
-rd /s /q  build dist 
+rd /s /q  build dist env1
 pip install wheel
 python setup.py   bdist_wininst bdist_wheel || goto ERROR
 cd /d %loc% || goto ERROR
 
 :: test wininst
-del env1 /f /q
+rd /s /q   env1
 virtualenv --no-site-packages --clear env1 || goto ERROR
 echo on
 call %loc%\env1\Scripts\activate.bat || goto ERROR
@@ -120,7 +120,7 @@ cd /d %loc% || goto ERROR
 %loc%env1\Scripts\easy_install.exe  %loc%\dist\%name%-%version%.%arch2%-py%pyver%.exe || goto ERROR
 cd /d %loc% || goto ERROR
 echo on
-python -m doctest -v README.txt|| goto ERROR
+python -m doctest -f -v README.txt|| goto ERROR
 python tests\test_1.py -v || goto ERROR
 pip install nose 
 python tests\test_multithreading.py || goto ERROR

@@ -1,3 +1,769 @@
-
-    Cannot open input file foo-bar-bat-box.inp
-    Cannot open input file foo-bar-bat-box.inp
+Trying:
+    from swmm5.swmm5tools import SWMM5Simulation
+Expecting nothing
+ok
+Trying:
+    st=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+Expecting nothing
+**********************************************************************
+File "README.txt", line 62, in README.txt
+Failed example:
+    st=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[1]>", line 1, in <module>
+        st=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+      File ".\swmm5\swmm5tools.py", line 68, in __init__
+        self.SWMM5run()
+      File ".\swmm5\swmm5tools.py", line 151, in SWMM5run
+        checkError(swmm5.RunSwmmDll(self.inpFile,self.rptFile,self.outFile))
+    AttributeError: 'module' object has no attribute 'RunSwmmDll'
+Trying:
+    st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
+Expecting:
+    '5.1.000'
+**********************************************************************
+File "README.txt", line 71, in README.txt
+Failed example:
+    st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[2]>", line 1, in <module>
+        st.SWMM5_Version()          # Version of underlying SWMM5 engine.
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM5_VERSION            # same thing as an integer 
+Expecting:
+    51000
+**********************************************************************
+File "README.txt", line 73, in README.txt
+Failed example:
+    st.SWMM5_VERSION            # same thing as an integer 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[3]>", line 1, in <module>
+        st.SWMM5_VERSION            # same thing as an integer
+    NameError: name 'st' is not defined
+Trying:
+    st.Flow_Units()           # Flow units. 
+Expecting:
+    'LPS'
+**********************************************************************
+File "README.txt", line 75, in README.txt
+Failed example:
+    st.Flow_Units()           # Flow units. 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[4]>", line 1, in <module>
+        st.Flow_Units()           # Flow units.
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  
+Expecting:
+    4
+**********************************************************************
+File "README.txt", line 77, in README.txt
+Failed example:
+    st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[5]>", line 1, in <module>
+        st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM_Nperiods          # number of reporting periods 
+Expecting:
+    360
+**********************************************************************
+File "README.txt", line 79, in README.txt
+Failed example:
+    st.SWMM_Nperiods          # number of reporting periods 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[6]>", line 1, in <module>
+        st.SWMM_Nperiods          # number of reporting periods
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM_Nsubcatch         # number of subcatchments
+Expecting:
+    6
+**********************************************************************
+File "README.txt", line 81, in README.txt
+Failed example:
+    st.SWMM_Nsubcatch         # number of subcatchments
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[7]>", line 1, in <module>
+        st.SWMM_Nsubcatch         # number of subcatchments
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM_Nnodes            # number of drainage system nodes
+Expecting:
+    12
+**********************************************************************
+File "README.txt", line 83, in README.txt
+Failed example:
+    st.SWMM_Nnodes            # number of drainage system nodes
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[8]>", line 1, in <module>
+        st.SWMM_Nnodes            # number of drainage system nodes
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM_Nlinks            # number of drainage system links
+Expecting:
+    11
+**********************************************************************
+File "README.txt", line 85, in README.txt
+Failed example:
+    st.SWMM_Nlinks            # number of drainage system links
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[9]>", line 1, in <module>
+        st.SWMM_Nlinks            # number of drainage system links
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM_Npolluts          # number of pollutants tracked
+Expecting:
+    0
+**********************************************************************
+File "README.txt", line 87, in README.txt
+Failed example:
+    st.SWMM_Npolluts          # number of pollutants tracked
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[10]>", line 1, in <module>
+        st.SWMM_Npolluts          # number of pollutants tracked
+    NameError: name 'st' is not defined
+Trying:
+    print ("%.2f"%st.SWMM_StartDate)  # start date of simulation
+Expecting:
+    40844.00
+**********************************************************************
+File "README.txt", line 89, in README.txt
+Failed example:
+    print ("%.2f"%st.SWMM_StartDate)  # start date of simulation
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[11]>", line 1, in <module>
+        print ("%.2f"%st.SWMM_StartDate)  # start date of simulation
+    NameError: name 'st' is not defined
+Trying:
+    st.SWMM_ReportStep
+Expecting:
+    60
+**********************************************************************
+File "README.txt", line 91, in README.txt
+Failed example:
+    st.SWMM_ReportStep
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[12]>", line 1, in <module>
+        st.SWMM_ReportStep
+    NameError: name 'st' is not defined
+Trying:
+    st.entityList()
+Expecting:
+    ['SUBCATCH', 'NODE', 'LINK', 'SYS']
+**********************************************************************
+File "README.txt", line 99, in README.txt
+Failed example:
+    st.entityList()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[13]>", line 1, in <module>
+        st.entityList()
+    NameError: name 'st' is not defined
+Trying:
+    st.Subcatch()
+Expecting:
+    ['A2', 'A1', 'A3', 'A4', 'A5', 'E1']
+**********************************************************************
+File "README.txt", line 101, in README.txt
+Failed example:
+    st.Subcatch()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[14]>", line 1, in <module>
+        st.Subcatch()
+    NameError: name 'st' is not defined
+Trying:
+    st.Node()
+Expecting:
+    ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'J12']
+**********************************************************************
+File "README.txt", line 103, in README.txt
+Failed example:
+    st.Node()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[15]>", line 1, in <module>
+        st.Node()
+    NameError: name 'st' is not defined
+Trying:
+    st.Link()
+Expecting:
+    ['T4-1', 'T4-2', 'T4-3', 'T1-1', 'T1-2', 'T2-1', 'T2-2', 'T2-3', 'T3-1', 'T3-2', 'T5']
+**********************************************************************
+File "README.txt", line 105, in README.txt
+Failed example:
+    st.Link()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[16]>", line 1, in <module>
+        st.Link()
+    NameError: name 'st' is not defined
+Trying:
+    st.Sys()
+Expecting:
+    ['SYS']
+**********************************************************************
+File "README.txt", line 107, in README.txt
+Failed example:
+    st.Sys()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[17]>", line 1, in <module>
+        st.Sys()
+    NameError: name 'st' is not defined
+Trying:
+    st.Pollutants() # no pollutants in this file. 
+Expecting:
+    []
+**********************************************************************
+File "README.txt", line 109, in README.txt
+Failed example:
+    st.Pollutants() # no pollutants in this file. 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[18]>", line 1, in <module>
+        st.Pollutants() # no pollutants in this file.
+    NameError: name 'st' is not defined
+Trying:
+    wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP5.1.inp")
+Expecting nothing
+**********************************************************************
+File "README.txt", line 111, in README.txt
+Failed example:
+    wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP5.1.inp")
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[19]>", line 1, in <module>
+        wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP5.1.inp")
+      File ".\swmm5\swmm5tools.py", line 68, in __init__
+        self.SWMM5run()
+      File ".\swmm5\swmm5tools.py", line 151, in SWMM5run
+        checkError(swmm5.RunSwmmDll(self.inpFile,self.rptFile,self.outFile))
+    AttributeError: 'module' object has no attribute 'RunSwmmDll'
+Trying:
+    wq.SWMM_Npolluts
+Expecting:
+    1
+**********************************************************************
+File "README.txt", line 112, in README.txt
+Failed example:
+    wq.SWMM_Npolluts
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[20]>", line 1, in <module>
+        wq.SWMM_Npolluts
+    NameError: name 'wq' is not defined
+Trying:
+    wq.Pollutants() # TSS in this case.  
+Expecting:
+    ['TSS']
+**********************************************************************
+File "README.txt", line 114, in README.txt
+Failed example:
+    wq.Pollutants() # TSS in this case.  
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[21]>", line 1, in <module>
+        wq.Pollutants() # TSS in this case.
+    NameError: name 'wq' is not defined
+Trying:
+    lst=st.varList("SUBCATCH")
+Expecting nothing
+**********************************************************************
+File "README.txt", line 116, in README.txt
+Failed example:
+    lst=st.varList("SUBCATCH")
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[22]>", line 1, in <module>
+        lst=st.varList("SUBCATCH")
+    NameError: name 'st' is not defined
+Trying:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Expecting:
+       0 Rainfall (in/hr or mm/hr)
+       1 Snow depth (in or mm)
+       2 Evaporation + infiltration losses (in/hr or mm/hr)
+       3 Runoff rate (flow units)
+       4 Groundwater outflow rate (flow units)
+       5 Groundwater water table elevation (ft or m)
+**********************************************************************
+File "README.txt", line 117, in README.txt
+Failed example:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[23]>", line 1, in <module>
+        print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    NameError: name 'lst' is not defined
+Trying:
+    lst=wq.varList("SUBCATCH") # for the network that has pollutants. 
+Expecting nothing
+**********************************************************************
+File "README.txt", line 124, in README.txt
+Failed example:
+    lst=wq.varList("SUBCATCH") # for the network that has pollutants. 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[24]>", line 1, in <module>
+        lst=wq.varList("SUBCATCH") # for the network that has pollutants.
+    NameError: name 'wq' is not defined
+Trying:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Expecting:
+       0 Rainfall (in/hr or mm/hr)
+       1 Snow depth (in or mm)
+       2 Evaporation + infiltration losses (in/hr or mm/hr)
+       3 Runoff rate (flow units)
+       4 Groundwater outflow rate (flow units)
+       5 Groundwater water table elevation (ft or m)
+       6 Runoff concentration of TSS (mg/l)
+**********************************************************************
+File "README.txt", line 125, in README.txt
+Failed example:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[25]>", line 1, in <module>
+        print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    NameError: name 'lst' is not defined
+Trying:
+    lst=wq.varList("NODE")
+Expecting nothing
+**********************************************************************
+File "README.txt", line 134, in README.txt
+Failed example:
+    lst=wq.varList("NODE")
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[26]>", line 1, in <module>
+        lst=wq.varList("NODE")
+    NameError: name 'wq' is not defined
+Trying:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Expecting:
+       0 Depth of water above invert (ft or m)
+       1 Hydraulic head (ft or m)
+       2 Volume of stored + ponded water (ft3 or m3)
+       3 Lateral inflow (flow units)
+       4 Total inflow (lateral + upstream) (flow units)
+       5 Flow lost to flooding (flow units)
+       6 Concentration of TSS (mg/l)
+**********************************************************************
+File "README.txt", line 135, in README.txt
+Failed example:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[27]>", line 1, in <module>
+        print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    NameError: name 'lst' is not defined
+Trying:
+    lst=wq.varList("LINK")
+Expecting nothing
+**********************************************************************
+File "README.txt", line 143, in README.txt
+Failed example:
+    lst=wq.varList("LINK")
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[28]>", line 1, in <module>
+        lst=wq.varList("LINK")
+    NameError: name 'wq' is not defined
+Trying:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Expecting:
+       0 Flow rate (flow units)
+       1 Flow depth (ft or m)
+       2 Flow velocity (ft/s or m/s)
+       3 Froude number
+       4 Capacity (fraction of conduit filled)
+       5 Concentration of TSS (mg/l)
+**********************************************************************
+File "README.txt", line 144, in README.txt
+Failed example:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[29]>", line 1, in <module>
+        print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    NameError: name 'lst' is not defined
+Trying:
+    lst=wq.varList("SYS")
+Expecting nothing
+**********************************************************************
+File "README.txt", line 151, in README.txt
+Failed example:
+    lst=wq.varList("SYS")
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[30]>", line 1, in <module>
+        lst=wq.varList("SYS")
+    NameError: name 'wq' is not defined
+Trying:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Expecting:
+       0 Air temperature (deg. F or deg. C)
+       1 Rainfall (in/hr or mm/hr)
+       2 Snow depth (in or mm)
+       3 Evaporation + infiltration loss rate (in/hr or mm/hr)
+       4 Runoff flow (flow units)
+       5 Dry weather inflow (flow units)
+       6 Groundwater inflow (flow units)
+       7 RDII inflow (flow units)
+       8 User supplied direct inflow (flow units)
+       9 Total lateral inflow (sum of variables 4 to 8) (flow units)
+      10 Flow lost to flooding (flow units)
+      11 Flow leaving through outfalls (flow units)
+      12 Volume of stored water (ft3 or m3)
+      13 Evaporation rate (in/day or mm/day)
+**********************************************************************
+File "README.txt", line 152, in README.txt
+Failed example:
+    print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[31]>", line 1, in <module>
+        print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    NameError: name 'lst' is not defined
+Trying:
+    r=list(st.Results('NODE','J1', 4)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
+Expecting nothing
+**********************************************************************
+File "README.txt", line 174, in README.txt
+Failed example:
+    r=list(st.Results('NODE','J1', 4)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[32]>", line 1, in <module>
+        r=list(st.Results('NODE','J1', 4)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
+    NameError: name 'st' is not defined
+Trying:
+    print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  
+Expecting:
+     0.00
+     0.00
+     0.00
+     0.03
+     3.32
+    13.71
+    28.17
+    45.93
+    64.62
+    83.10
+**********************************************************************
+File "README.txt", line 175, in README.txt
+Failed example:
+    print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[33]>", line 1, in <module>
+        print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.
+    NameError: name 'r' is not defined
+Trying:
+    r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly. 
+Expecting nothing
+**********************************************************************
+File "README.txt", line 186, in README.txt
+Failed example:
+    r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly. 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[34]>", line 1, in <module>
+        r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly.
+    NameError: name 'st' is not defined
+Trying:
+    print ("\n".join(["%5.2f"% (i) for i in  r]))  #doctest: +ELLIPSIS
+Expecting:
+     0.00
+     0.00
+     0.00
+     7.20
+     7.20
+     7.20
+     7.60
+     7.60
+     7.60
+     8.00
+     ...
+     0.00
+**********************************************************************
+File "README.txt", line 187, in README.txt
+Failed example:
+    print ("\n".join(["%5.2f"% (i) for i in  r]))  #doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[35]>", line 1, in <module>
+        print ("\n".join(["%5.2f"% (i) for i in  r]))  #doctest: +ELLIPSIS
+    NameError: name 'r' is not defined
+Trying:
+    wq.Subcatch()
+Expecting:
+    ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
+**********************************************************************
+File "README.txt", line 206, in README.txt
+Failed example:
+    wq.Subcatch()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[36]>", line 1, in <module>
+        wq.Subcatch()
+    NameError: name 'wq' is not defined
+Trying:
+    r=list(wq.Results('SUBCATCH','S3', 6)) # TSS out of catchment 'S3'. We convert it to a list.
+Expecting nothing
+**********************************************************************
+File "README.txt", line 213, in README.txt
+Failed example:
+    r=list(wq.Results('SUBCATCH','S3', 6)) # TSS out of catchment 'S3'. We convert it to a list.
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[37]>", line 1, in <module>
+        r=list(wq.Results('SUBCATCH','S3', 6)) # TSS out of catchment 'S3'. We convert it to a list.
+    NameError: name 'wq' is not defined
+Trying:
+    print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  
+Expecting:
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+**********************************************************************
+File "README.txt", line 214, in README.txt
+Failed example:
+    print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[38]>", line 1, in <module>
+        print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.
+    NameError: name 'r' is not defined
+Trying:
+    simtemp=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+Expecting nothing
+**********************************************************************
+File "README.txt", line 233, in README.txt
+Failed example:
+    simtemp=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[39]>", line 1, in <module>
+        simtemp=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+      File ".\swmm5\swmm5tools.py", line 68, in __init__
+        self.SWMM5run()
+      File ".\swmm5\swmm5tools.py", line 151, in SWMM5run
+        checkError(swmm5.RunSwmmDll(self.inpFile,self.rptFile,self.outFile))
+    AttributeError: 'module' object has no attribute 'RunSwmmDll'
+Trying:
+    f=simtemp.getFiles()
+Expecting nothing
+**********************************************************************
+File "README.txt", line 234, in README.txt
+Failed example:
+    f=simtemp.getFiles()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[40]>", line 1, in <module>
+        f=simtemp.getFiles()
+    NameError: name 'simtemp' is not defined
+Trying:
+    f #doctest: +ELLIPSIS
+Expecting:
+    ['swmm5/examples/simple/swmm5Example.inp', '...swmm5Example....rpt', '...swmm5Example....dat']
+**********************************************************************
+File "README.txt", line 235, in README.txt
+Failed example:
+    f #doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[41]>", line 1, in <module>
+        f #doctest: +ELLIPSIS
+    NameError: name 'f' is not defined
+Trying:
+    from os.path import isfile
+Expecting nothing
+ok
+Trying:
+    [isfile(x) for x in f] # do they exist in the operating system. 
+Expecting:
+    [True, True, True]
+**********************************************************************
+File "README.txt", line 238, in README.txt
+Failed example:
+    [isfile(x) for x in f] # do they exist in the operating system. 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[43]>", line 1, in <module>
+        [isfile(x) for x in f] # do they exist in the operating system.
+    NameError: name 'f' is not defined
+Trying:
+    simtemp.clean()
+Expecting nothing
+**********************************************************************
+File "README.txt", line 240, in README.txt
+Failed example:
+    simtemp.clean()
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[44]>", line 1, in <module>
+        simtemp.clean()
+    NameError: name 'simtemp' is not defined
+Trying:
+    [isfile(x) for x in f] # do they exist in the operating system. 
+Expecting:
+    [True, False, False]
+**********************************************************************
+File "README.txt", line 241, in README.txt
+Failed example:
+    [isfile(x) for x in f] # do they exist in the operating system. 
+Exception raised:
+    Traceback (most recent call last):
+      File "D:\WinPython-32bit-3.3.5.0\python-3.3.5\Lib\doctest.py", line 1313, in __run
+        compileflags, 1), test.globs)
+      File "<doctest README.txt[45]>", line 1, in <module>
+        [isfile(x) for x in f] # do they exist in the operating system.
+    NameError: name 'f' is not defined
+Trying:
+    from swmm5 import swmm5 as sw
+Expecting nothing
+ok
+Trying:
+    ret=sw.RunSwmmDll("./swmm5/examples/simple/swmm5Example.inp","swmm5Example.rpt","swmm5.dat")
+Expecting nothing
+ok
+Trying:
+    print (ret)
+Expecting:
+    0
+ok
+Trying:
+    sw.OpenSwmmOutFile("swmm5.dat")
+Expecting:
+    0
+ok
+Trying:
+    sw.cvar.SWMM_Nperiods
+Expecting:
+    360
+ok
+Trying:
+    ret,x=sw.GetSwmmResult(3,0,1,5)
+Expecting nothing
+ok
+Trying:
+    print ('%.2f' % x)
+Expecting:
+    7.20
+ok
+**********************************************************************
+1 items had failures:
+  44 of  53 in README.txt
+53 tests in 1 items.
+9 passed and 44 failed.
+***Test Failed*** 44 failures.

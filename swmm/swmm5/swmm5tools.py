@@ -7,30 +7,30 @@ from  os import close, remove
 
 def checkError(ret):
     if ret > 1: # not 0, or minus
-        raise SWMM5Error(ret)    
+        raise SWMM5Error(ret)
 
 class SWMM5Error(Exception):
-    
+
     """ swmm5 call (c function) has returned an error (convention : non zero value)"""
-    
+
     def __init__(self,value):
         self.value=value
         self.msg=swmm5.error_getMsg(value)
     def __str__(self):
         return repr(self.value)+": "+self.msg
-    
+
 FILEOPENED=False
 
 class SWMM5Simulation(object):
     """Handles the communication with underlying C routines to run swmm5 and read simulation results."""
-    
+
     class _SWMM5Results_file_open(object):
-        
-        
+
+
         def __init__(self,outFile):
             global FILEOPENED
             self.outFile=outFile
-            
+
         def __enter__(self):
             global FILEOPENED
             if (not FILEOPENED):
@@ -40,7 +40,7 @@ class SWMM5Simulation(object):
             else:
                 self.CLOSE=False
             return self
-        
+
         def __exit__(self, type, value, traceback):
             global FILEOPENED
             try:
@@ -49,17 +49,17 @@ class SWMM5Simulation(object):
                     FILEOPENED=False
             except:
                 pass
-            
-    
+
+
     def __init__(self, inpFile, rptFile=None, outFile=None, clean=True):
         #dc=dict.__init__(self)
         self._clean=clean
         bn=basename(inpFile)
         dn=dirname(inpFile)
-        if not rptFile: 
+        if not rptFile:
             h,rptFile=mkstemp(prefix=bn[0:-4], suffix=".rpt")
             close(h)
-        if not outFile: 
+        if not outFile:
             h,outFile=mkstemp(prefix=bn[0:-4], suffix=".dat")
             close(h)
         self.inpFile=inpFile
@@ -70,20 +70,20 @@ class SWMM5Simulation(object):
 
     def __addvar(self,val):
         self._variables.append(val)
-        
+
 
     def clean(self):
         """Delete all the files created by swmm run"""
         remove(self.rptFile)
         remove(self.outFile)
         #print "cleaning up."
-          
-        
-        
+
+
+
     def SWMM5_Version(self):
         v=str(self.SWMM5_VERSION)
         return v[0]+"."+v[1]+"."+v[2:]
-    
+
     def _setvariables(self):
         with self._SWMM5Results_file_open(self.outFile):
             UNITS=["mg/l","ug/l","counts/l"]
@@ -98,15 +98,17 @@ class SWMM5Simulation(object):
             self._ids["SYS"       ]=[3,OrderedDict({"SYS":0})]
             self._pollutants       =[swmm5.GetIDName() for x in range(swmm5.cvar.SWMM_Npolluts)]
             self._pollunits        =[UNITS[swmm5.GetInt()] for x in range(swmm5.cvar.SWMM_Npolluts)]
-       
-            # now build a list of available outputs for each entity. 
-        su=[        
+
+            # now build a list of available outputs for each entity.
+        su=[
         "Rainfall (in/hr or mm/hr)",
         "Snow depth (in or mm)",
-        "Evaporation + infiltration losses (in/hr or mm/hr)",
+        "Evaporation loss (in/hr or mm/hr)",
+        "Infiltration loss (in/hr or mm/hr)",
         "Runoff rate (flow units)",
         "Groundwater outflow rate (flow units)",
-        "Groundwater water table elevation (ft or m)"]
+        "Groundwater water table elevation (ft or m)",
+        "Soil Moisture (volumetric fraction, less or equal tosoil porosity)"]
         su.extend(["Runoff concentration of %s (%s)" % x for x in zip(self._pollutants, self._pollunits)])
         no=[
         "Depth of water above invert (ft or m)",
@@ -137,39 +139,39 @@ class SWMM5Simulation(object):
         "Flow lost to flooding (flow units)",
         "Flow leaving through outfalls (flow units)",
         "Volume of stored water (ft3 or m3)",
-        "Evaporation rate (in/day or mm/day)"]     
-      
+        "Evaporation rate (in/day or mm/day)"]
+
         self._variables=OrderedDict()
         self._variables["SUBCATCH"  ]=su
         self._variables["NODE"      ]=no
         self._variables["LINK"      ]=li
         self._variables["SYS"       ]=sy
 
-       
+
 
     def SWMM5run(self):
         checkError(swmm5.RunSwmmDll(self.inpFile,self.rptFile,self.outFile))
 
-       
-      
-    
-    def __getattribute__(self, name): 
+
+
+
+    def __getattribute__(self, name):
         try:
             return object.__getattribute__(self, name)
         except:
             pass
         with self._SWMM5Results_file_open(self.outFile):
-            if(hasattr(swmm5.cvar,name)): # search c library. 
+            if(hasattr(swmm5.cvar,name)): # search c library.
                 return getattr(swmm5.cvar,name)
         raise AttributeError("The attribute %s not found with this class or underlying c interface" % name)
 
-        
+
     def entityList(self):
         return list(self._ids.keys())
-    
+
     def varList(self,entity):
         return self._variables[entity]
-        
+
     def Subcatch(self):
         return list(self._ids["SUBCATCH"][1].keys())
     def Node(self):
@@ -182,21 +184,19 @@ class SWMM5Simulation(object):
         return self._pollutants
     def getFiles(self):
         return [self.inpFile, self.rptFile, self.outFile]
-    
+
     def Results(self,entity,id,variable):
-       with self._SWMM5Results_file_open(self.outFile):
+        with self._SWMM5Results_file_open(self.outFile):
             # [swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i)[1] for i in range(self.SWMM_Nperiods)]
             for i in range(self.SWMM_Nperiods):
-                yield swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i)[1] 
+                yield swmm5.GetSwmmResult(self._ids[entity][0],self._ids[entity][1][id],variable,i)[1]
             #return swmm5.GetSwmmResult(1,0,4,0)
     def Flow_Units(self):
         return ["CFS", "GPM", "MGD" , "CMS", "LPS", "LPD" ][self.SWMM_FlowUnits]
-    
-    
+
+
 if __name__=="__main__":
-    ss=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+    ss=SWMM5Simulation("examples/simple/swmm5Example.inp")
     print(ss.SWMM_Nperiods)
-    #print list(ss.Results('NODE','J1', 4))
-    #print ss.SWMM5_Version()
-    
-    
+    print (list(ss.Results('NODE','J1', 4)))
+    print (ss.SWMM5_Version())

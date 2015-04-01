@@ -1,5 +1,5 @@
 @echo off
-set "VIRTUAL_ENV=E:\learn\swmm5-python\swmm\env1"
+set "VIRTUAL_ENV=e:\learn\swmm5-python\swmm\env1"
 
 if defined _OLD_VIRTUAL_PROMPT (
     set "PROMPT=%_OLD_VIRTUAL_PROMPT%"

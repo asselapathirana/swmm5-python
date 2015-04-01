@@ -1,6 +1,6 @@
 
 /* Parser-tokenizer link interface */
-
+#ifndef Py_LIMITED_API
 #ifndef Py_PARSETOK_H
 #define Py_PARSETOK_H
 #ifdef __cplusplus
@@ -9,10 +9,13 @@ extern "C" {
 
 typedef struct {
     int error;
-    const char *filename;
+#ifndef PGEN
+    /* The filename is useless for pgen, see comment in tok_state structure */
+    PyObject *filename;
+#endif
     int lineno;
     int offset;
-    char *text;
+    char *text;                 /* UTF-8-encoded string */
     int token;
     int expected;
 } perrdetail;
@@ -25,12 +28,12 @@ typedef struct {
 
 #if 0
 #define PyPARSE_WITH_IS_KEYWORD		0x0003
-#endif
-
 #define PyPARSE_PRINT_IS_FUNCTION       0x0004
 #define PyPARSE_UNICODE_LITERALS        0x0008
+#endif
 
-
+#define PyPARSE_IGNORE_COOKIE 0x0010
+#define PyPARSE_BARRY_AS_BDFL 0x0020
 
 PyAPI_FUNC(node *) PyParser_ParseString(const char *, grammar *, int,
                                               perrdetail *);
@@ -39,26 +42,40 @@ PyAPI_FUNC(node *) PyParser_ParseFile (FILE *, const char *, grammar *, int,
 
 PyAPI_FUNC(node *) PyParser_ParseStringFlags(const char *, grammar *, int,
                                               perrdetail *, int);
-PyAPI_FUNC(node *) PyParser_ParseFileFlags(FILE *, const char *, grammar *,
+PyAPI_FUNC(node *) PyParser_ParseFileFlags(FILE *, const char *,
+					   const char*, grammar *,
 						 int, char *, char *,
 						 perrdetail *, int);
-PyAPI_FUNC(node *) PyParser_ParseFileFlagsEx(FILE *, const char *, grammar *,
-						 int, char *, char *,
-						 perrdetail *, int *);
+PyAPI_FUNC(node *) PyParser_ParseFileFlagsEx(
+    FILE *fp,
+    const char *filename,       /* decoded from the filesystem encoding */
+    const char *enc,
+    grammar *g,
+    int start,
+    char *ps1,
+    char *ps2,
+    perrdetail *err_ret,
+    int *flags);
 
 PyAPI_FUNC(node *) PyParser_ParseStringFlagsFilename(const char *,
 					      const char *,
 					      grammar *, int,
                                               perrdetail *, int);
-PyAPI_FUNC(node *) PyParser_ParseStringFlagsFilenameEx(const char *,
-					      const char *,
-					      grammar *, int,
-                                              perrdetail *, int *);
+PyAPI_FUNC(node *) PyParser_ParseStringFlagsFilenameEx(
+    const char *s,
+    const char *filename,       /* decoded from the filesystem encoding */
+    grammar *g,
+    int start,
+    perrdetail *err_ret,
+    int *flags);
 
-/* Note that he following function is defined in pythonrun.c not parsetok.c. */
+/* Note that the following functions are defined in pythonrun.c,
+   not in parsetok.c */
 PyAPI_FUNC(void) PyParser_SetError(perrdetail *);
+PyAPI_FUNC(void) PyParser_ClearError(perrdetail *);
 
 #ifdef __cplusplus
 }
 #endif
 #endif /* !Py_PARSETOK_H */
+#endif /* !Py_LIMITED_API */

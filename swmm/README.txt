@@ -2,6 +2,15 @@ SWMM5 Python calling interface
 (c) Assela Pathirana
 Released under GNU GPL v.3
 
+Release History:
+----------------
+
+version 1.0.0.1 first production (non-beta) release. 
+
+version 1.1.0.1 version with new SWMM 5.1 version (instead of SWMM 5.0)
+
+
+
 Installation:
 -------------
 :Windows: 
@@ -60,9 +69,9 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
-    '5.0.021'
+    '5.1.000'
     >>> st.SWMM5_VERSION            # same thing as an integer 
-    50021
+    51000
     >>> st.Flow_Units()           # Flow units. 
     'LPS'
     >>> st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  
@@ -99,28 +108,35 @@ One should always use the new interface. The old interface (below) is left only 
    ['SYS']
    >>> st.Pollutants() # no pollutants in this file. 
    []
-   >>> wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP.inp")
+   >>> wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP5.1.inp")
    >>> wq.SWMM_Npolluts
    1
-   >>> wq.Pollutants() # no pollutants in this file. 
+   >>> wq.Pollutants() # TSS in this case.  
    ['TSS']
    >>> lst=st.varList("SUBCATCH")
    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
       0 Rainfall (in/hr or mm/hr)
       1 Snow depth (in or mm)
-      2 Evaporation + infiltration losses (in/hr or mm/hr)
-      3 Runoff rate (flow units)
-      4 Groundwater outflow rate (flow units)
-      5 Groundwater water table elevation (ft or m)
+      2 Evaporation loss (in/hr or mm/hr)
+      3 Infiltration loss (in/hr or mm/hr)
+      4 Runoff rate (flow units)
+      5 Groundwater outflow rate (flow units)
+      6 Groundwater water table elevation (ft or m)
+      7 Soil Moisture (volumetric fraction, less or equal tosoil porosity)
+
+
+
    >>> lst=wq.varList("SUBCATCH") # for the network that has pollutants. 
    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
       0 Rainfall (in/hr or mm/hr)
       1 Snow depth (in or mm)
-      2 Evaporation + infiltration losses (in/hr or mm/hr)
-      3 Runoff rate (flow units)
-      4 Groundwater outflow rate (flow units)
-      5 Groundwater water table elevation (ft or m)
-      6 Runoff concentration of TSS (mg/l)
+      2 Evaporation loss (in/hr or mm/hr)
+      3 Infiltration loss (in/hr or mm/hr)
+      4 Runoff rate (flow units)
+      5 Groundwater outflow rate (flow units)
+      6 Groundwater water table elevation (ft or m)
+      7 Soil Moisture (volumetric fraction, less or equal tosoil porosity)
+      8 Runoff concentration of TSS (mg/l)
       
    >>> lst=wq.varList("NODE")
    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
@@ -196,11 +212,12 @@ One should always use the new interface. The old interface (below) is left only 
 
     >>> wq.Subcatch()
     ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
-    >>> r=list(wq.Results('SUBCATCH','S3', 6)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  
+	
+    >>> r=list(wq.Results('SUBCATCH','S3', 8)) # TSS out of catchment 'S3'. We convert it to a list.
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF
      0.00
-     9.94
-     9.99
+     0.00
+     0.00
     10.00
     10.00
     10.00
@@ -208,6 +225,39 @@ One should always use the new interface. The old interface (below) is left only 
     14.11
     14.71
     15.24
+	
+::
+
+    >>> wq.Node()
+    ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'O1']
+	
+    >>> r=list(wq.Results('NODE','J3', 6)) # TSS out of Node 'J3'. We convert it to a list.
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF
+     0.00
+    10.00
+    10.00
+    10.00
+    10.00
+    10.04
+    13.43
+    14.11
+    14.71
+    15.24
+
+    >>> wq.Link()
+    ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11']
+	
+    >>> r=list(wq.Results('LINK','C11', 5)) # TSS out of Link 'C11'. We convert it to a list.
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r)) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF +ELLIPSIS
+     0.00
+     0.00
+     1.56
+     3.86
+     7.64
+     8.85
+    10.38
+    ...
+    47.58
 
    
 :Example 5: Tracking output files

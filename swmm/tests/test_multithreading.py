@@ -21,14 +21,21 @@ class testSWMM5(unittest.TestCase):
         return
     def runSWMM2(self):
         """Runs swmm and obtain some results"""
+
         ss=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP.inp")       
         self.assertEquals(ss.Flow_Units(), 'CFS')
         self.assertEquals(ss.entityList(),['SUBCATCH', 'NODE', 'LINK', 'SYS'])
-        g=ss.Results('SUBCATCH','S3', 6)
+        g=ss.Results('SUBCATCH','S3', 8)
         self.assertAlmostEqual(next(g),0.00)
-        self.assertAlmostEqual(next(g),9.937597274780273)
-        self.assertAlmostEqual(next(g),9.9885835647583)
-        self.assertAlmostEqual(next(g),9.995906829833984)
+        self.assertAlmostEqual(next(g),0.00)
+        self.assertAlmostEqual(next(g),0.00)
+        self.assertAlmostEqual(next(g),10.00)
+        self.assertAlmostEqual(next(g),10.00)
+        self.assertAlmostEqual(next(g),10.00)
+        self.assertAlmostEqual(next(g),13.44666862487793)
+        self.assertAlmostEqual(next(g),14.10814380645752)
+        self.assertAlmostEqual(next(g),14.707027435302734)
+        self.assertAlmostEqual(next(g),15.237997055053711)
         ss.getFiles()
         return        
     
