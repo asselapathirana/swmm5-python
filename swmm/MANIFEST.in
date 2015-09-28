@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 include swmm5/swmm5/*.h swmm5/*.h swmm5/swmm5/*.c swmm5/*.c
+=======
+include swmm5/swmm5/*.h swmm5/*.h swmm5/swmm5/*.c swmm5/*.c
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
 include swmm5/swmm5/xsect.dat

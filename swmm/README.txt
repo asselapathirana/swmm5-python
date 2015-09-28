@@ -2,6 +2,7 @@ SWMM5 Python calling interface
 (c) Assela Pathirana
 Released under GNU GPL v.3
 
+<<<<<<< HEAD
 Release History:
 ----------------
 
@@ -24,10 +25,13 @@ Until now the library returned a results time series shifted by one reporting pe
 
 
 
+=======
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
 Installation:
 -------------
 :Windows: 
 
+<<<<<<< HEAD
 As of version 1.0.0.1 SWMM5 is verified to work with Python 3 as well. 
 
 Now (as of version 1.0.0.1) the package is provided as python Wheel too. This means for windows the following command should install SWMM5
@@ -40,6 +44,11 @@ Now (as of version 1.0.0.1) the package is provided as python Wheel too. This me
 Alternatively, use the SWMM5-x.y.z.k.win32.exe file downloaded from the repository for click and install. 
 
 If you have your own C compilers, then  SWMM5-x.y.z.k.zip can be used to install as 
+=======
+Use the SWMM5-x.y.z.k.win32.exe file downloaded from the respository for click and install. 
+
+Alternatively SWMM5-x.y.z.k.zip can be used to install as 
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
 
 ::
 
@@ -53,11 +62,14 @@ Download SWMM5-x.y.z.k.zip can be used to install as
 
     python setup.py install
 
+<<<<<<< HEAD
 Or, just with, 
 ::
 
     pip install SWMM5
 
+=======
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
 Usage:
 ------
 
@@ -82,9 +94,15 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
+<<<<<<< HEAD
     '5.1.000'
     >>> st.SWMM5_VERSION            # same thing as an integer 
     51000
+=======
+    '5.0.021'
+    >>> st.SWMM5_VERSION            # same thing as an integer 
+    50021
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
     >>> st.Flow_Units()           # Flow units. 
     'LPS'
     >>> st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  
@@ -99,7 +117,11 @@ One should always use the new interface. The old interface (below) is left only 
     11
     >>> st.SWMM_Npolluts          # number of pollutants tracked
     0
+<<<<<<< HEAD
     >>> print ("%.2f"%st.SWMM_StartDate)  # start date of simulation
+=======
+    >>> print "%.2f"%st.SWMM_StartDate  # start date of simulation
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
     40844.00
     >>> st.SWMM_ReportStep
     60
@@ -121,6 +143,7 @@ One should always use the new interface. The old interface (below) is left only 
    ['SYS']
    >>> st.Pollutants() # no pollutants in this file. 
    []
+<<<<<<< HEAD
    >>> wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP5.1.inp")
    >>> wq.SWMM_Npolluts
    1
@@ -153,6 +176,33 @@ One should always use the new interface. The old interface (below) is left only 
       
    >>> lst=wq.varList("NODE")
    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+=======
+   >>> wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP.inp")
+   >>> wq.SWMM_Npolluts
+   1
+   >>> wq.Pollutants() # no pollutants in this file. 
+   ['TSS']
+   >>> lst=st.varList("SUBCATCH")
+   >>> print "\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst)) # print in a column with index.
+      0 Rainfall (in/hr or mm/hr)
+      1 Snow depth (in or mm)
+      2 Evaporation + infiltration losses (in/hr or mm/hr)
+      3 Runoff rate (flow units)
+      4 Groundwater outflow rate (flow units)
+      5 Groundwater water table elevation (ft or m)
+   >>> lst=wq.varList("SUBCATCH") # for the network that has pollutants. 
+   >>> print "\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst)) # print in a column with index.
+      0 Rainfall (in/hr or mm/hr)
+      1 Snow depth (in or mm)
+      2 Evaporation + infiltration losses (in/hr or mm/hr)
+      3 Runoff rate (flow units)
+      4 Groundwater outflow rate (flow units)
+      5 Groundwater water table elevation (ft or m)
+      6 Runoff concentration of TSS (mg/l)
+      
+   >>> lst=wq.varList("NODE")
+   >>> print "\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst)) # print in a column with index.
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
       0 Depth of water above invert (ft or m)
       1 Hydraulic head (ft or m)
       2 Volume of stored + ponded water (ft3 or m3)
@@ -161,7 +211,11 @@ One should always use the new interface. The old interface (below) is left only 
       5 Flow lost to flooding (flow units)
       6 Concentration of TSS (mg/l)
    >>> lst=wq.varList("LINK")
+<<<<<<< HEAD
    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+=======
+   >>> print "\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst)) # print in a column with index.
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
       0 Flow rate (flow units)
       1 Flow depth (ft or m)
       2 Flow velocity (ft/s or m/s)
@@ -169,7 +223,11 @@ One should always use the new interface. The old interface (below) is left only 
       4 Capacity (fraction of conduit filled)
       5 Concentration of TSS (mg/l)
    >>> lst=wq.varList("SYS")
+<<<<<<< HEAD
    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+=======
+   >>> print "\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst)) # print in a column with index.
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
       0 Air temperature (deg. F or deg. C)
       1 Rainfall (in/hr or mm/hr)
       2 Snow depth (in or mm)
@@ -192,7 +250,12 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> r=list(st.Results('NODE','J1', 4)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
+<<<<<<< HEAD
     >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:9])) # Lets print the first 9 items.  
+=======
+    >>> print "\n".join( "%5.2f"% (i) for i in  r[0:10]) # Lets print the first 10 items.  
+     0.00
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
      0.00
      0.00
      0.03
@@ -203,7 +266,12 @@ One should always use the new interface. The old interface (below) is left only 
     64.62
     83.10
     >>> r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly. 
+<<<<<<< HEAD
     >>> print ("\n".join(["%5.2f"% (i) for i in  r]))  #doctest: +ELLIPSIS
+=======
+    >>> print "\n".join(["%5.2f"% (i) for i in  r])  #doctest: +ELLIPSIS
+     0.00
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
      0.00
      0.00
      7.20
@@ -223,11 +291,19 @@ One should always use the new interface. The old interface (below) is left only 
 
     >>> wq.Subcatch()
     ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
+<<<<<<< HEAD
 	
     >>> r=list(wq.Results('SUBCATCH','S3', 8)) # TSS out of catchment 'S3'. We convert it to a list.
     >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:9])) # Lets print the first 9 items.  #doctest: +REPORT_NDIFF
      0.00
      0.00
+=======
+    >>> r=list(wq.Results('SUBCATCH','S3', 6)) # total inflow into node "J1". The Results function returns a generator. We convert it to a list.
+    >>> print "\n".join( "%5.2f"% (i) for i in  r[0:10]) # Lets print the first 10 items.  
+     0.00
+     9.94
+     9.99
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
     10.00
     10.00
     10.00
@@ -235,6 +311,7 @@ One should always use the new interface. The old interface (below) is left only 
     14.11
     14.71
     15.24
+<<<<<<< HEAD
 	
 ::
 
@@ -267,6 +344,8 @@ One should always use the new interface. The old interface (below) is left only 
     ...
     47.58
     47.57
+=======
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
 
    
 :Example 5: Tracking output files
@@ -318,7 +397,11 @@ should return 0 if everything is OK (according to to swmm convension)
 
 ::
 
+<<<<<<< HEAD
     >>> print (ret)
+=======
+    >>> print ret
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
     0
     >>>
 
@@ -344,7 +427,11 @@ Systems rainfall at fifth timestep
 ::
     
     >>> ret,x=sw.GetSwmmResult(3,0,1,5)
+<<<<<<< HEAD
     >>> print ('%.2f' % x)
+=======
+    >>> print '%.2f' % x
+>>>>>>> 69bcb3e905257c4a370e55f483acbc4df825991b
     7.20
     >>>
 
