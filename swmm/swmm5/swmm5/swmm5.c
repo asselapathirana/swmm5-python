@@ -42,6 +42,7 @@
   #define WINDOWS
 #endif
 
+#undef WINDOWS
 ////  ---- following section modified for release 5.1.008.  ////               //(5.1.008)
 ////
 // --- define EXH (MS Windows exception handling)
@@ -718,7 +719,7 @@ char* getTempFileName(char* fname)
 //
 {
 // For Windows systems:
-#ifdef WINDOWS
+//#ifdef WINDOWS
 
     char* name = NULL;
     char* dir = NULL;
@@ -744,15 +745,15 @@ char* getTempFileName(char* fname)
     // --- return the new contents of fname
     return fname;
 
-// For non-Windows systems:
-#else
-
-    // --- use system function mkstemp() to create a temporary file name
-    strcpy(fname, "swmmXXXXXX");
-    mkstemp(fname);
-    return fname;
-
-#endif
+//// For non-Windows systems:
+//#else
+//
+//    // --- use system function mkstemp() to create a temporary file name
+//    strcpy(fname, "swmmXXXXXX");
+//    mkstemp(fname);
+//    return fname;
+//
+//#endif
 }
 
 //=============================================================================

@@ -22,6 +22,7 @@
   #define WINDOWS
 #endif
 
+#undef WINDOWS
 // --- define DLLEXPORT
 
 #ifdef WINDOWS
