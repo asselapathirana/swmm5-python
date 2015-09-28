@@ -34,6 +34,8 @@
   #define WINDOWS
 #endif
 
+#undef WINDOWSx
+
 // --- headers for exception handling
 #ifdef WINDOWS
 #include <windows.h>
@@ -682,7 +684,7 @@ char* getTempFileName(char* fname)
 //
 {
 // For Windows systems:
-#ifdef WINDOWS
+// #ifdef WINDOWS
 
     char* name = NULL;
     char* dir = NULL;
@@ -709,14 +711,14 @@ char* getTempFileName(char* fname)
     return fname;
 
 // For non-Windows systems:
-#else
+//#else
 
     // --- use system function mkstemp() to create a temporary file name
-    strcpy(fname, "swmmXXXXXX");
-    mkstemp(fname);
-    return fname;
+//    strcpy(fname, "swmmXXXXXX");
+//    mkstemp(fname);
+//    return fname;
 
-#endif
+//#endif
 }
 
 //=============================================================================

@@ -6,6 +6,20 @@ from time import sleep
 
 class testSWMM5(unittest.TestCase):
 #class testSWMM5(object):
+    # since python 3.4 testcase is not picklable without 
+    #doing the following (offender is _outcome)
+    # http://stackoverflow.com/questions/25646382/python-3-4-multiprocessing-does-not-work-with-unittest
+    def __getstate__(self):
+        self_dict = self.__dict__.copy()
+        try:
+            del self_dict['_outcome']
+        except KeyError:
+            print("This python version does not provide key '_outcome' - harmless, ignoring...")
+        
+        return self_dict
+
+    def __setstate(self, state):
+            self.__dict__.update(self_dict)    
     
     def runSWMM1(self):
         """Runs swmm and obtain some results"""

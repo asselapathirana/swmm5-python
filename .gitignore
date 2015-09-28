@@ -1,4 +1,4 @@
-# ignore .hg directory
+#ignore virtual env
 /.hg
 #env1 ignore
 /swmm/env1

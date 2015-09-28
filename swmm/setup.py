@@ -2,11 +2,14 @@
 """
 setup.py file for SWMM5 pyton library  - Assela Pathirana
 """
+NAME="SWMM5"
+VERSION="5.1.0.10"
 
 from distutils.core import  setup, Extension
 from itertools import product
 from setuptools import setup, Extension, Command
-import os
+import os,sys
+
 
 with open("README.txt","r") as f:
     README=f.read()
@@ -46,8 +49,18 @@ EXTS.extend([x.upper() for x in EXTS])
 EXAMPLES=list(product(EXAMPLES,EXTS))
 package_data=[ "examples/"+x[0]+"/*."+x[1] for x in EXAMPLES]
 print(package_data)
-NAME=os.environ["name"]
-VERSION=os.environ["version"]
+
+
+
+
+if ((not NAME) or (not VERSION)):
+	print ("environment variables 'name' and 'version' are not set.")
+	print ("Please set them e.g. name=SWMM5, version=1.1.0.1 (x.y.z.k)")
+	print (" .. and rerun.")
+	print ("Exiting ...")
+	sys.exit()
+
+
 KEYWORDS=["Hydraulics", "Hydrology", "Urban Drainage", "Sewerage", "Water Engineering", "Numerical Methods","Computer Model","Environmental Science", "Engineering", "Science"]
 
 

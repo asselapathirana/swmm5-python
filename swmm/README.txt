@@ -5,6 +5,14 @@ Released under GNU GPL v.3
 Release History:
 ----------------
 
+version 5.1.0.10 now following swmm5 version numbers in order to avoid confusion. 
+
+US-EPA has is rapidly introducing new versions of SWMM5 with 
+input files that are not forward compatible with older versions. 
+EPA does not leave old binaries of SWMM5 after each new release. Which effectively forces me to create
+binaries each time they release a new version. To avoid that now I share the respective SWMM5.exe binary
+with this distribution. 
+
 version 1.0.0.1 first production (non-beta) release. 
 
 version 1.1.0.1 version with new SWMM 5.1 version (instead of SWMM 5.0)
