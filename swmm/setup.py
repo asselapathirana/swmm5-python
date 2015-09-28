@@ -8,6 +8,9 @@ from itertools import product
 from setuptools import setup, Extension, Command
 import os
 
+NAME=os.environ["name"]
+VERSION=os.environ["version"]
+
 with open("README.txt","r") as f:
     README=f.read()
     
@@ -20,8 +23,8 @@ csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c',
                                      'kinwave.c', 'landuse.c', 'lid.c', 'lidproc.c',
 									 'link.c', 'massbal.c', 
                                      'mathexpr.c', 'mempool.c', 'node.c', 'odesolve.c', 'output.c', 
-                                     'project.c', 'qualrout.c', 'rain.c', 'rdii.c', 'report.c', 
-                                     'routing.c', 'runoff.c', 'shape.c', 'snow.c', 'stats.c', 
+                                     'project.c', 'qualrout.c', 'rain.c', 'rdii.c', 'report.c', 'roadway.c',
+                                     'routing.c', 'runoff.c', 'shape.c', 'snow.c', 'stats.c', 'surfqual.c',
                                      'statsrpt.c', 'subcatch.c', 'swmm5.c', 
                                       'table.c',  'toposort.c', 
                                      'transect.c', 'treatmnt.c', 'xsect.c' , 
@@ -35,8 +38,8 @@ csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c',
 csources.extend(['swmm5/swmm5_wrap.c','swmm5/swmm5_interface.c'])
 swmm5_module = Extension('_swmm5',
                            sources=csources,
-						     #extra_compile_args=['/openmp'],
-                             #extra_link_args=['/openmp']
+						    extra_compile_args=['-fopenmp'],
+                            extra_link_args=['-fopenmp']
                            )
 
 
@@ -46,8 +49,7 @@ EXTS.extend([x.upper() for x in EXTS])
 EXAMPLES=list(product(EXAMPLES,EXTS))
 package_data=[ "examples/"+x[0]+"/*."+x[1] for x in EXAMPLES]
 print(package_data)
-NAME=os.environ["name"]
-VERSION=os.environ["version"]
+
 KEYWORDS=["Hydraulics", "Hydrology", "Urban Drainage", "Sewerage", "Water Engineering", "Numerical Methods","Computer Model","Environmental Science", "Engineering", "Science"]
 
 

@@ -183,16 +183,15 @@ One should always use the new interface. The old interface (below) is left only 
      0.00
      0.00
      0.00
-     0.03
-     3.32
-    13.71
-    28.17
-    45.93
-    64.62
-    83.10
+     3.21
+    13.50
+    27.90
+    45.63
+    64.32
+    82.79
+    101.84
     >>> r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly. 
     >>> print ("\n".join(["%5.2f"% (i) for i in  r]))  #doctest: +ELLIPSIS
-     0.00
      0.00
      0.00
      7.20
@@ -214,17 +213,18 @@ One should always use the new interface. The old interface (below) is left only 
     ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
 	
     >>> r=list(wq.Results('SUBCATCH','S3', 8)) # TSS out of catchment 'S3'. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  #doctest.NORMALIZE_WHITESPACE
      0.00
      0.00
      0.00
-    10.00
-    10.00
-    10.00
+     0.00
+     0.00
     13.45
     14.11
     14.71
     15.24
+    15.70
+
 	
 ::
 
@@ -232,32 +232,40 @@ One should always use the new interface. The old interface (below) is left only 
     ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'O1']
 	
     >>> r=list(wq.Results('NODE','J3', 6)) # TSS out of Node 'J3'. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r[0:10])) # Lets print the first 10 items.  
      0.00
-    10.00
-    10.00
-    10.00
-    10.00
-    10.04
-    13.43
-    14.11
-    14.71
-    15.24
+     0.00
+     0.00
+     0.00
+     0.00
+    13.26
+    14.10
+    14.70
+    15.23
+    15.69
 
     >>> wq.Link()
     ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11']
 	
     >>> r=list(wq.Results('LINK','C11', 5)) # TSS out of Link 'C11'. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r)) # Lets print the first 10 items.  #doctest: +REPORT_NDIFF +ELLIPSIS
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r)) # Lets print the first 10 items.  #doctest:  +ELLIPSIS
      0.00
      0.00
-     1.56
-     3.86
-     7.64
-     8.85
-    10.38
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+     5.42
+     9.96
+    12.76
+    14.77
+    16.43
+    17.91
+    19.27
+    20.56
     ...
-    47.58
+    44.65
 
    
 :Example 5: Tracking output files

@@ -6,6 +6,22 @@ from time import sleep
 
 class testSWMM5(unittest.TestCase):
 #class testSWMM5(object):
+
+    #class testSWMM5(object):
+    # since python 3.4 testcase is not picklable without 
+    #doing the following (offender is _outcome)
+    # http://stackoverflow.com/questions/25646382/python-3-4-multiprocessing-does-not-work-with-unittest
+    def __getstate__(self):
+        self_dict = self.__dict__.copy()
+        try:
+            del self_dict['_outcome']
+        except KeyError:
+            print("This python version does not provide key '_outcome' - harmless, ignoring...")
+        
+        return self_dict
+
+    def __setstate(self, state):
+            self.__dict__.update(self_dict) 
     
     def runSWMM1(self):
         """Runs swmm and obtain some results"""
@@ -13,7 +29,7 @@ class testSWMM5(unittest.TestCase):
         self.assertEquals(ss.Flow_Units(), 'LPS')
         self.assertEquals(ss.entityList(),['SUBCATCH', 'NODE', 'LINK', 'SYS'])
         g=ss.Results('SYS','SYS', 1)
-        [next(g) for x in range(8)]
+        [next(g) for x in range(7)]
         self.assertAlmostEqual(next(g),7.600000858306885)
         self.assertAlmostEqual(next(g),8.000000000000000)    
         ss.getFiles()
@@ -29,9 +45,8 @@ class testSWMM5(unittest.TestCase):
         self.assertAlmostEqual(next(g),0.00)
         self.assertAlmostEqual(next(g),0.00)
         self.assertAlmostEqual(next(g),0.00)
-        self.assertAlmostEqual(next(g),10.00)
-        self.assertAlmostEqual(next(g),10.00)
-        self.assertAlmostEqual(next(g),10.00)
+        self.assertAlmostEqual(next(g),0.00)
+        self.assertAlmostEqual(next(g),0.00)
         self.assertAlmostEqual(next(g),13.44666862487793)
         self.assertAlmostEqual(next(g),14.10814380645752)
         self.assertAlmostEqual(next(g),14.707027435302734)
