@@ -10,6 +10,7 @@
 *.rar
 *.tar
 *.zip
+*.rpt
 
 
 # ignore .hg directory

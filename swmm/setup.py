@@ -8,8 +8,8 @@ from itertools import product
 from setuptools import setup, Extension, Command
 import os
 
-NAME=os.environ["name"]
-VERSION=os.environ["version"]
+NAME='SWMM5'
+VERSION='5.1.0.102'
 
 with open("README.txt","r") as f:
     README=f.read()
@@ -38,8 +38,8 @@ csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c',
 csources.extend(['swmm5/swmm5_wrap.c','swmm5/swmm5_interface.c'])
 swmm5_module = Extension('_swmm5',
                            sources=csources,
-						    extra_compile_args=['-fopenmp'],
-                            extra_link_args=['-fopenmp']
+						    extra_compile_args=['-fopenmp','-Wno-deprecated','-O3'],
+                            extra_link_args=['-fopenmp','-Wno-deprecated','-O3'],
                            )
 
 
