@@ -38,20 +38,22 @@ MAX_TRIALS           0
 HEAD_TOLERANCE       0
 SYS_FLOW_TOL         5
 LAT_FLOW_TOL         5
+MINIMUM_STEP         0.5
+THREADS              1
 
 [EVAPORATION]
-;;Evap Data      Parameters
+;;Data Source    Parameters
 ;;-------------- ----------------
 CONSTANT         0.0
 DRY_ONLY         NO
 
 [RAINGAGES]
-;;Gage           Format    Interval SCF      Source    
+;;Name           Format    Interval SCF      Source    
 ;;-------------- --------- ------ ------ ----------
 RainGage         INTENSITY 0:05     1.0      TIMESERIES 0.1-in          
 
 [SUBCATCHMENTS]
-;;Subcatchment   Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  Snow Pack       
+;;Name           Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  SnowPack        
 ;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- ----------------
 S1               RainGage         J1               4.55     56.8     1587     2        1680                     
 S2               RainGage         J2               4.74     63.0     1653     2        1680                     
@@ -84,7 +86,7 @@ S6               4.5        0.2        6.5        7          0
 S7               4.5        0.2        6.5        7          0         
 
 [JUNCTIONS]
-;;Junction       Invert     MaxDepth   InitDepth  SurDepth   Aponded   
+;;Name           Elevation  MaxDepth   InitDepth  SurDepth   Aponded   
 ;;-------------- ---------- ---------- ---------- ---------- ----------
 J1               4973       0          0          0          0         
 J2               4969       0          0          0          0         
@@ -99,12 +101,12 @@ J10              4963.8     0          0          0          0
 J11              4963       0          0          0          0         
 
 [OUTFALLS]
-;;Outfall        Invert     Type       Stage Data       Gated   
-;;-------------- ---------- ---------- ---------------- --------
-O1               4962       FREE                        NO
+;;Name           Elevation  Type       Stage Data       Gated    Route To        
+;;-------------- ---------- ---------- ---------------- -------- ----------------
+O1               4962       FREE                        NO                       
 
 [CONDUITS]
-;;Conduit        From Node        To Node          Length     Roughness  InOffset   OutOffset  InitFlow   MaxFlow   
+;;Name           From Node        To Node          Length     Roughness  InOffset   OutOffset  InitFlow   MaxFlow   
 ;;-------------- ---------------- ---------------- ---------- ---------- ---------- ---------- ---------- ----------
 C1               J1               J5               185.00     0.05       0          0          0          0         
 C2               J2               J11              526.00     0.016      0          4          0          0         
@@ -119,8 +121,8 @@ C10              J10              J11              145.00     0.05       0      
 C11              J11              O1               89.00      0.016      0          0          0          0         
 
 [XSECTIONS]
-;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels   
-;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
+;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels    Culvert   
+;;-------------- ------------ ---------------- ---------- ---------- ---------- ---------- ----------
 C1               TRAPEZOIDAL  3                5          5          5          1                    
 C2               TRAPEZOIDAL  1                0          0.0001     25         1                    
 C3               CIRCULAR     2.25             0          0          0          1                    
@@ -134,13 +136,13 @@ C10              TRAPEZOIDAL  3                5          5          5          
 C11              CIRCULAR     4.75             0          0          0          1                    
 
 [POLLUTANTS]
-;;Pollutant      Units  Cppt       Cgw        Crdii      Kdecay     SnowOnly   Co-Pollutant     Co-Frac    Cdwf       Cinit     
+;;Name           Units  Crain      Cgw        Crdii      Kdecay     SnowOnly   Co-Pollutant     Co-Frac    Cdwf       Cinit     
 ;;-------------- ------ ---------- ---------- ---------- ---------- ---------- ---------------- ---------- ---------- ----------
 TSS              MG/L   10         0.0        0.0        0.0        NO         *                0.0        0          0         
 
 [LANDUSES]
-;;               Cleaning   Fraction   Last      
-;;Land Use       Interval   Available  Cleaned   
+;;               Sweeping   Fraction   Last      
+;;Name           Interval   Available  Swept     
 ;;-------------- ---------- ---------- ----------
 Residential_1    0          0          0         
 Residential_2    0          0          0         
@@ -161,25 +163,25 @@ S5               Commercial       98
 S6               Commercial       100       
 
 [LOADINGS]
-;;Subcatchment   Pollutant        InitLoad  
+;;Subcatchment   Pollutant        Buildup   
 ;;-------------- ---------------- ----------
 
 [BUILDUP]
-;;Land Use       Pollutant        Function   Coeff1     Coeff2     Coeff3     Normalizer
+;;Land Use       Pollutant        Function   Coeff1     Coeff2     Coeff3     Per Unit  
 ;;-------------- ---------------- ---------- ---------- ---------- ---------- ----------
 Residential_1    TSS              EXP        0.11       0.5        0.0        CURB      
 Residential_2    TSS              EXP        0.13       0.5        0.0        CURB      
 Commercial       TSS              EXP        0.15       0.2        0.0        CURB      
 
 [WASHOFF]
-;;Land Use       Pollutant        Function   Coeff1     Coeff2     Ecleaning  Ebmp      
+;;Land Use       Pollutant        Function   Coeff1     Coeff2     SweepRmvl  BmpRmvl   
 ;;-------------- ---------------- ---------- ---------- ---------- ---------- ----------
 Residential_1    TSS              EXP        20         1.8        0.0        0.0       
 Residential_2    TSS              EXP        40         2.2        0.0        0.0       
 Commercial       TSS              EXP        40         2.2        0.0        0.0       
 
 [TIMESERIES]
-;;Time Series    Date       Time       Value     
+;;Name           Date       Time       Value     
 ;;-------------- ---------- ---------- ----------
 2-yr                        0:00       0.29      
 2-yr                        0:05       0.33      

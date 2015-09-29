@@ -1,10 +1,11 @@
 :: echo off
-:: 
+:: download epa-swmm binary and install it. Open the examples *inp files using this binary and save them back. (Important to make sure the version compatibility of the library)
+:: Download and extract swmm sourcecode to swmm/swmm5/swmm5 directory. 
 :: first step both in swmm5.c and swmm5.h #undef WINDOWS after its definition
 :: then make sure mkstemp is not used to create temporary files in 
 :: char* getTempFileName(char* fname) function (desable WINDOWS macro use
 :: Run this script for each python version x architecture combination
-:: then manually upload swmm version to to pypi
+
 
 :: MAKE SURE to edit version and name in setup.py too!! (Fix this later so that run.bat does not have to specify it!!)
 

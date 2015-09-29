@@ -1,9 +1,16 @@
 [TITLE]
+;;Project Title/Notes
 
 [OPTIONS]
+;;Option             Value
 FLOW_UNITS           LPS
 INFILTRATION         CURVE_NUMBER
 FLOW_ROUTING         DYNWAVE
+LINK_OFFSETS         DEPTH
+MIN_SLOPE            0
+ALLOW_PONDING        NO
+SKIP_STEADY_STATE    NO
+
 START_DATE           10/28/2011
 START_TIME           00:00:00
 REPORT_START_DATE    10/28/2011
@@ -17,33 +24,34 @@ REPORT_STEP          00:01:00
 WET_STEP             00:01:00
 DRY_STEP             00:01:00
 ROUTING_STEP         0:00:30 
-ALLOW_PONDING        NO
+
 INERTIAL_DAMPING     PARTIAL
+NORMAL_FLOW_LIMITED  SLOPE
+FORCE_MAIN_EQUATION  H-W
 VARIABLE_STEP        0.75
 LENGTHENING_STEP     0
 MIN_SURFAREA         0
-NORMAL_FLOW_LIMITED  SLOPE
-SKIP_STEADY_STATE    NO
-FORCE_MAIN_EQUATION  H-W
-LINK_OFFSETS         DEPTH
-MIN_SLOPE            0
+MAX_TRIALS           0
+HEAD_TOLERANCE       0
+SYS_FLOW_TOL         5
+LAT_FLOW_TOL         5
+MINIMUM_STEP         0.5
+THREADS              1
 
 [EVAPORATION]
-;;Type       Parameters
-;;---------- ----------
-CONSTANT     0.0
-DRY_ONLY     NO
+;;Data Source    Parameters
+;;-------------- ----------------
+CONSTANT         0.0
+DRY_ONLY         NO
 
 [RAINGAGES]
-;;               Rain      Time   Snow   Data      
-;;Name           Type      Intrvl Catch  Source    
+;;Name           Format    Interval SCF      Source    
 ;;-------------- --------- ------ ------ ----------
-Gage1            VOLUME    0:03   1.0    TIMESERIES ABM10yrs2hrs    
+Gage1            VOLUME    0:03     1.0      TIMESERIES ABM10yrs2hrs    
 
 [SUBCATCHMENTS]
-;;                                                 Total    Pcnt.             Pcnt.    Curb     Snow    
-;;Name           Raingage         Outlet           Area     Imperv   Width    Slope    Length   Pack    
-;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- --------
+;;Name           Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  SnowPack        
+;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- ----------------
 A2               Gage1            J4               96.9     40.80    1000     4.13     0                        
 A1               Gage1            J1               33.8     29.24    1000     4.13     0                        
 A3               Gage1            J3               50.7     32.17    1000     4.13     0                        
@@ -62,7 +70,7 @@ A5               0.01       0.1        0.05       0.05       25         OUTLET
 E1               0.01       0.1        0.05       0.05       25         OUTLET    
 
 [INFILTRATION]
-;;Subcatchment   CurveNum   HydCon     DryTime   
+;;Subcatchment   CurveNum              DryTime   
 ;;-------------- ---------- ---------- ----------
 A2               90         0.5        7         
 A1               90         0.5        7         
@@ -72,8 +80,7 @@ A5               90         0.5        7
 E1               70         0.5        7         
 
 [JUNCTIONS]
-;;               Invert     Max.       Init.      Surcharge  Ponded    
-;;Name           Elev.      Depth      Depth      Depth      Area      
+;;Name           Elevation  MaxDepth   InitDepth  SurDepth   Aponded   
 ;;-------------- ---------- ---------- ---------- ---------- ----------
 J1               0          0          0          0          0         
 J2               45.633     1.8        0          0          0         
@@ -88,14 +95,12 @@ J10              32.424     2          0          0          0
 J11              27.159     2          0          0          0         
 
 [OUTFALLS]
-;;               Invert     Outfall    Stage/Table      Tide
-;;Name           Elev.      Type       Time Series      Gate
-;;-------------- ---------- ---------- ---------------- ----
-J12              15.649     FREE                        NO
+;;Name           Elevation  Type       Stage Data       Gated    Route To        
+;;-------------- ---------- ---------- ---------------- -------- ----------------
+J12              15.649     FREE                        NO                       
 
 [CONDUITS]
-;;               Inlet            Outlet                      Manning    Inlet      Outlet     Init.      Max.      
-;;Name           Node             Node             Length     N          Offset     Offset     Flow       Flow      
+;;Name           From Node        To Node          Length     Roughness  InOffset   OutOffset  InitFlow   MaxFlow   
 ;;-------------- ---------------- ---------------- ---------- ---------- ---------- ---------- ---------- ----------
 T4-1             J9               J10              117        0.02       0          0          0          0         
 T4-2             J10              J11              117        0.02       0          0          0          0         
@@ -110,8 +115,8 @@ T3-2             J7               J8               342        0.02       0      
 T5               J8               J12              47.33      0.01       0          0          0          0         
 
 [XSECTIONS]
-;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels   
-;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
+;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels    Culvert   
+;;-------------- ------------ ---------------- ---------- ---------- ---------- ---------- ----------
 T4-1             CIRCULAR     1                0          0          0          1                    
 T4-2             CIRCULAR     1                0          0          0          1                    
 T4-3             CIRCULAR     1                0          0          0          1                    
@@ -123,10 +128,6 @@ T2-3             CIRCULAR     0.8              0          0          0          
 T3-1             CIRCULAR     0.8              0          0          0          3                    
 T3-2             CIRCULAR     1                0          0          0          2                    
 T5               RECT_OPEN    3                3          0          0          1                    
-
-[LOSSES]
-;;Link           Inlet      Outlet     Average    Flap Gate 
-;;-------------- ---------- ---------- ---------- ----------
 
 [TIMESERIES]
 ;;Name           Date       Time       Value     
@@ -253,7 +254,7 @@ T5               RECT_OPEN    3                3          0          0          
 2hrRainfall                 1:58       0.12      
 2hrRainfall                 1:59       0.12      
 2hrRainfall                 2:00       0.11      
-
+;
 ;Rainfall Data
 ABM10yrs2hrs                0:00       0         
 ABM10yrs2hrs                0:03       0.36      
@@ -298,6 +299,7 @@ ABM10yrs2hrs                1:57       0.37
 ABM10yrs2hrs                2:00       0.35      
 
 [REPORT]
+;;Reporting Options
 INPUT      NO
 CONTROLS   NO
 SUBCATCHMENTS ALL
