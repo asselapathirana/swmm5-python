@@ -12,6 +12,8 @@
 *.zip
 *.rpt
 
+swmm5.dat
+
 
 # ignore .hg directory
 /.hg
