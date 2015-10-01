@@ -12,7 +12,7 @@
 *.zip
 *.rpt
 
-swmm5.dat
+swmm/swmm5.dat
 
 
 # ignore .hg directory
