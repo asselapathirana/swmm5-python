@@ -30,7 +30,6 @@ if not "%1" == "" (
 	)
 )
 
-echo "Hi", %good%
 
 if not %good%=="true" (
 	echo "USAGE: %0% <name (case is important check on pypi!)> <arch 64bit/32bit> <python_version x.x.x.x> <version x.x.x.x[dev]>
