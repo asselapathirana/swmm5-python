@@ -1373,7 +1373,7 @@ void report_writeErrorCode()
         if ( (ErrorCode >= ERR_MEMORY && ErrorCode <= ERR_TIMESTEP)
         ||   (ErrorCode >= ERR_FILE_NAME && ErrorCode <= ERR_OUT_FILE)
         ||   (ErrorCode == ERR_SYSTEM) )
-            fprintf(Frpt.file, error_getMsg(ErrorCode));
+			fputs(Frpt.file, error_getMsg(ErrorCode));
     }
 }
 
