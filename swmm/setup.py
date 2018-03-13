@@ -7,14 +7,24 @@ from distutils.core import  setup, Extension
 from itertools import product
 from setuptools import setup, Extension, Command
 import os
+import glob
 
 NAME='SWMM5'
-VERSION='5.1.0.102'
+VERSION='5.1.0.102-2'
+
+# in windows use microsoft compilers
+if os.name == 'nt':
+    compilerargs = []
+    linkerargs   = []
+else:
+    compilerargs = ['-fopenmp','-Wno-deprecated','-O3']
+    linkerargs   = ['-fopenmp','-Wno-deprecated','-O3']
+
 
 with open("README.txt","r") as f:
     README=f.read()
     
-csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c', 
+ccodefiles=[  'climate.c', 'controls.c', 'culvert.c', 
 									 'datetime.c', 'dwflow.c',
                                      'dynwave.c', 'error.c', 'exfil.c','findroot.c', 'flowrout.c', 
                                      'forcmain.c', 'gage.c', 'gwater.c', 'hash.c', 
@@ -27,19 +37,21 @@ csources=['swmm5/swmm5/'+x for x in [ 'climate.c', 'controls.c', 'culvert.c',
                                      'routing.c', 'runoff.c', 'shape.c', 'snow.c', 'stats.c', 'surfqual.c',
                                      'statsrpt.c', 'subcatch.c', 'swmm5.c', 
                                       'table.c',  'toposort.c', 
-                                     'transect.c', 'treatmnt.c', 'xsect.c' , 
-                                     # headers now
-                                     #"consts.h", "datetime.h", "enums.h", "error.h", 
-                                     #"findroot.h", "funcs.h", "globals.h", "hash.h", 
-                                     #"headers.h", "infil.h", "keywords.h", "lid.h", 
-                                     #"macros.h", "mathexpr.h", "mempool.h", "objects.h", 
-                                     #"odesolve.h", "swmm5.h", "swmm5_iface.h", "text.h"
-                                     ]]
+                                     'transect.c', 'treatmnt.c', 'xsect.c' , ]
+
+# headers now
+#"consts.h", "datetime.h", "enums.h", "error.h", 
+#"findroot.h", "funcs.h", "globals.h", "hash.h", 
+#"headers.h", "infil.h", "keywords.h", "lid.h", 
+#"macros.h", "mathexpr.h", "mempool.h", "objects.h", 
+#"odesolve.h", "swmm5.h", "swmm5_iface.h", "text.h"
+
+csources=['swmm5/swmm5/'+x for x in ccodefiles]
 csources.extend(['swmm5/swmm5_wrap.c','swmm5/swmm5_interface.c'])
 swmm5_module = Extension('_swmm5',
-                           sources=csources,
-						    extra_compile_args=['-fopenmp','-Wno-deprecated','-O3'],
-                            extra_link_args=['-fopenmp','-Wno-deprecated','-O3'],
+    sources=csources,
+    extra_compile_args=compilerargs,
+    extra_link_args=linkerargs,
                            )
 
 
@@ -48,7 +60,6 @@ EXTS=["inp", "py"]
 EXTS.extend([x.upper() for x in EXTS])
 EXAMPLES=list(product(EXAMPLES,EXTS))
 package_data=[ "examples/"+x[0]+"/*."+x[1] for x in EXAMPLES]
-print(package_data)
 
 KEYWORDS=["Hydraulics", "Hydrology", "Urban Drainage", "Sewerage", "Water Engineering", "Numerical Methods","Computer Model","Environmental Science", "Engineering", "Science"]
 

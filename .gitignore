@@ -11,7 +11,7 @@
 *.tar
 *.zip
 *.rpt
-
+*.swp
 swmm/swmm5.dat
 
 
