@@ -52,7 +52,7 @@ Usage:
 
 One should always use the new interface. The old interface (below) is left only for backward compatibility. The key features of new interface are 
     * More pythonic interface
-    * A number of convienience functions
+    * A number of convenience functions
     
  Import new interface and run SWMM
 
