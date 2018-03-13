@@ -10,15 +10,15 @@ import os
 import glob
 
 NAME='SWMM5'
-VERSION='5.1.0.102-2'
+VERSION='5.1.012'
 
 # in windows use microsoft compilers
 if os.name == 'nt':
-    compilerargs = []
+    compilerargs = ['-D/DLL=1']
     linkerargs   = []
 else:
-    compilerargs = ['-fopenmp','-Wno-deprecated','-O3']
-    linkerargs   = ['-fopenmp','-Wno-deprecated','-O3']
+    compilerargs = ['-D SOL=1', '-fopenmp','-Wno-deprecated','-O3','-Wno-error','-Wno-error=format-security' ]
+    linkerargs   = ['-fopenmp','-Wno-deprecated','-O3','-Wno-error']
 
 
 with open("README.txt","r") as f:
