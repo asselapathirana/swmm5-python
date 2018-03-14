@@ -1,0 +1,35 @@
+1. New swmm version: replace files in swmm5\swmm5 with the new version. 
+
+THEN comment all definitions CLE, SOL and DLL (they will be defined by the compiler options depending on the OS)
+
+/**********************************************************
+//  Leave only one of the following 3 lines un-commented,
+//  depending on the choice of compilation target
+//**********************************************************
+//#define CLE     /* Compile as a command line executable */
+//#define SOL     /* Compile as a shared object library */
+//#define DLL     /* Compile as a Windows DLL */
+
+2. Upload to pypi
+
+delete directory dist if exists. 
+
+python setup.py bdist_wininst
+python setup.py bdist_wheel
+python setup.py sdsit
+
+the binaries has to be done with ALL python versions supported. 
+
+3. Then upload them with twine
+twin upload dist/*
+
+4. Compilers for windows: Now we (again) use microsoft compilers! So, if python defaults to gcc (mingw) as in winpython 3.4
+
+edit pydistutils.cfg file to have ONLY following content (
+
+[config]
+
+
+(During compilation (setup.py) you will be asked to download certain compilers from microsfot)
+
+That's it. 
