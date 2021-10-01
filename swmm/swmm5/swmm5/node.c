@@ -7,6 +7,9 @@
 //             09/15/14   (Build 5.1.007)
 //             04/02/15   (Build 5.1.008)
 //             08/05/15   (Build 5.1.010)
+//             05/10/18   (Build 5.1.013)
+//             03/01/20   (Build 5.1.014)
+//             04/14/20   (Build 5.1.015)
 //   Author:   L. Rossman
 //
 //   Conveyance system node functions.
@@ -23,10 +26,20 @@
 //   Build 5.1.010:
 //   - Storage losses now based on node's new volume instead of old volume.
 //
+//   Build 5.1.013:
+//   - A surcharge depth can now be applied to storage nodes.
+//   - A negative inflow is now assigned to an Outfall node with backflow. 
+//
+//   Build 5.1.014:
+//   - Fixed bug in storage_losses() that affected storage exfiltration.
+//
+//   Build 5.1.015:
+//   - Fatal error issued if a storage node's area curve produces a negative
+//     volume when extrapolated to the node's full depth.
 //-----------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "headers.h"
@@ -51,7 +64,7 @@ typedef struct
 //  node_setOldQualState   (called from routing_execute)
 //  node_initInflow        (called from routing_execute)
 //  node_setOutletDepth    (called from routing_execute)
-//  node_getLosses         (called from routing_execute)                       //(5.1.008)
+//  node_getLosses         (called from routing_execute)
 //  node_getSystemOutflow  (called from removeOutflows in routing.c)
 //  node_getResults        (called from output_saveNodeResults)
 //  node_getPondedArea     (called from initNodeStates in dynwave.c)
@@ -60,7 +73,6 @@ typedef struct
 //  node_getSurfArea
 //  node_getDepth
 //  node_getVolume
-//  node_getPondedDepth    removed                                             //(5.1.008)
 
 //-----------------------------------------------------------------------------
 //  Local functions
@@ -145,9 +157,6 @@ void  node_setParams(int j, int type, int k, double x[])
         Outfall[k].tideCurve   = (int)x[3];
         Outfall[k].stageSeries = (int)x[4];
         Outfall[k].hasFlapGate = (char)x[5];
-
-////  Following code segment added to release 5.1.008.  ////                   //(5.1.008)
-
         Outfall[k].routeTo     = (int)x[6];
         Outfall[k].wRouted     = NULL;
         if ( Outfall[k].routeTo >= 0 )
@@ -155,7 +164,6 @@ void  node_setParams(int j, int type, int k, double x[])
             Outfall[k].wRouted =
                 (double *) calloc(Nobjects[POLLUT], sizeof(double));
         }
-////
         break;
 
       case STORAGE:
@@ -165,7 +173,10 @@ void  node_setParams(int j, int type, int k, double x[])
         Storage[k].aExpon  = x[4];
         Storage[k].aConst  = x[5];
         Storage[k].aCurve  = (int)x[6];
-        // x[7] (ponded depth) is deprecated.                                  //(5.1.007)
+
+        // Surcharge depth replaces ponded area                                //(5.1.013)
+        Node[j].surDepth   = x[7] / UCF(LENGTH);                               //
+        
         Storage[k].fEvap   = x[8];
         break;
 
@@ -205,6 +216,11 @@ void  node_validate(int j)
     if ( Node[j].initDepth > Node[j].fullDepth + Node[j].surDepth )
         report_writeErrorMsg(ERR_NODE_DEPTH, Node[j].ID);
 
+    // --- check for negative volume for storage node at full depth            //(5.1.015)
+    if (Node[j].type == STORAGE)                                               //
+        if (node_getVolume(j, Node[j].fullDepth) < 0.0)                        //
+            report_writeErrorMsg(ERR_STORAGE_VOLUME, Node[j].ID);              //
+
     if ( Node[j].type == DIVIDER ) divider_validate(j);
 
     // --- initialize dry weather inflows
@@ -225,7 +241,7 @@ void node_initState(int j)
 //  Purpose: initializes a node's state variables at start of simulation.
 //
 {
-    int p, k;                                                                  //(5.1.007)
+    int p, k;
 
     // --- initialize depth
     Node[j].oldDepth = Node[j].initDepth;
@@ -246,10 +262,7 @@ void node_initState(int j)
     // --- initialize any inflow
     Node[j].oldLatFlow = 0.0;
     Node[j].newLatFlow = 0.0;
-    Node[j].losses = 0.0;                                                      //(5.1.007)
-
-
-////  Following code section added to release 5.1.007.  ////                   //(5.1.007)
+    Node[j].losses = 0.0;
 
     // --- initialize storage nodes
     if ( Node[j].type == STORAGE )
@@ -261,9 +274,6 @@ void node_initState(int j)
         // --- initialize exfiltration properties
         if ( Storage[k].exfil ) exfil_initState(k);
     }
-////
-
-////  Following code section added to release 5.1.008.  ////                   //(5.1.008)
 
     // --- initialize flow stream routed from outfall onto a subcatchment
     if ( Node[j].type == OUTFALL )
@@ -275,7 +285,6 @@ void node_initState(int j)
             for (p = 0; p < Nobjects[POLLUT]; p++) Outfall[k].wRouted[p] = 0.0;
         }
     }
-////
 }
 
 //=============================================================================
@@ -288,7 +297,6 @@ void node_setOldHydState(int j)
 //
 {
     Node[j].oldDepth    = Node[j].newDepth;
-    Node[j].oldLatFlow  = Node[j].newLatFlow;
     Node[j].oldVolume   = Node[j].newVolume;
 }
 
@@ -323,7 +331,7 @@ void node_initInflow(int j, double tStep)
     Node[j].oldFlowInflow = Node[j].inflow;
     Node[j].oldNetInflow  = Node[j].inflow - Node[j].outflow;
     Node[j].inflow = Node[j].newLatFlow;
-    Node[j].outflow = Node[j].losses;                                          //(5.1.007)
+    Node[j].outflow = Node[j].losses;
 
     // --- set overflow to any excess stored volume
     if ( Node[j].newVolume > Node[j].fullVolume )
@@ -448,8 +456,6 @@ double node_getSystemOutflow(int j, int *isFlooded)
         // --- node sends flow into outfall conduit
         //     (therefore it has a negative outflow)
         else
-
-////  Following code segment modified for release 5.1.007.  ////               //(5.1.007)
         {
             if ( Node[j].inflow == 0.0 )
             {
@@ -655,8 +661,8 @@ int storage_readParams(int j, int k, char* tok[], int ntoks)
 //  Purpose: reads a storage unit's properties from a tokenized line of input.
 //
 //  Format of input line is:
-//     nodeID  elev  maxDepth  initDepth  FUNCTIONAL a1 a2 a0 aPond fEvap (infil)
-//     nodeID  elev  maxDepth  initDepth  TABULAR    curveID  aPond fEvap (infil)
+//     nodeID  elev  maxDepth  initDepth  FUNCTIONAL a1 a2 a0 surDepth fEvap (infil) //(5.1.013)
+//     nodeID  elev  maxDepth  initDepth  TABULAR    curveID  surDepth fEvap (infil) //
 //
 {
     int    i, m, n;
@@ -708,7 +714,7 @@ int storage_readParams(int j, int k, char* tok[], int ntoks)
         n = 6;
     }
 
-    // --- ignore next token if present (deprecated ponded area property)      //(5.1.007) 
+    // --- ponded area replaced by surcharge depth                             //(5.1.013)
     if ( ntoks > n)
     {
         if ( ! getDouble(tok[n], &x[7]) )
@@ -729,7 +735,7 @@ int storage_readParams(int j, int k, char* tok[], int ntoks)
     node_setParams(j, STORAGE, k, x);
 
     // --- read exfiltration parameters if present
-    if ( ntoks > n ) return exfil_readStorageParams(k, tok, ntoks, n);         //(5.1.007)
+    if ( ntoks > n ) return exfil_readStorageParams(k, tok, ntoks, n);
     return 0;
 }
 
@@ -799,7 +805,7 @@ void  storage_getVolDiff(double y, double* f, double* df, void* p)
     int    k;
     double e, v;
     TStorageVol* storageVol;
-		
+
     // ... cast void pointer p to a TStorageVol object
     storageVol = (TStorageVol *)p;
     k = storageVol->k;
@@ -835,7 +841,7 @@ double storage_getVolume(int j, double d)
 
     // --- use table integration if area v. depth table exists
     if ( i >= 0 )
-        return table_getArea(&Curve[i], d*UCF(LENGTH)) / UCF(VOLUME);
+      return table_getArea(&Curve[i], d*UCF(LENGTH)) / UCF(VOLUME);
 
     // --- otherwise use functional area v. depth relation
     else
@@ -845,6 +851,7 @@ double storage_getVolume(int j, double d)
         v += Storage[k].aCoeff / (Storage[k].aExpon+1.0) *
              pow(d, Storage[k].aExpon+1.0);
         return v / UCF(VOLUME);
+
     }
 }
 
@@ -906,8 +913,6 @@ double storage_getOutflow(int j, int i)
 
 //=============================================================================
 
-////  This function was modified for release 5.1.008.  ////                    //(5.1.008)
-
 double storage_getLosses(int j, double tStep)
 //
 //  Input:   j = node index
@@ -926,9 +931,6 @@ double storage_getLosses(int j, double tStep)
     double lossRatio;
     TExfil* exfil;
 
-    // --- if node has some stored volume
-    if ( Node[j].newVolume > FUDGE )                                           //(5.1.010)
-    {
         // --- get node's evap. rate (ft/s) &  exfiltration object
         k = Node[j].subIndex;
         evapRate = Evap.rate * Storage[k].fEvap;
@@ -938,11 +940,12 @@ double storage_getLosses(int j, double tStep)
         if ( evapRate > 0.0 || exfil != NULL) 
         {
             // --- obtain storage depth & surface area 
-            depth = Node[j].newDepth;                                          //(5.1.010)
+            depth = Node[j].newDepth;
             area = storage_getSurfArea(j, depth);
 
             // --- compute evap rate over this area (cfs)
-            evapRate = area * evapRate;
+            if (Node[j].newVolume > FUDGE)
+                evapRate = area * evapRate;
 
             // --- find exfiltration rate (cfs) through bottom and side banks
             if ( exfil != NULL )
@@ -952,15 +955,14 @@ double storage_getLosses(int j, double tStep)
 
             // --- total loss over time step cannot exceed stored volume
             totalLoss = (evapRate + exfilRate) * tStep;
-            if ( totalLoss > Node[j].newVolume )                               //(5.1.010)
+            if ( totalLoss > Node[j].newVolume )
             {
-                lossRatio = Node[j].newVolume / totalLoss;                     //(5.1.010)
+                lossRatio = Node[j].newVolume / totalLoss;
                 evapRate *= lossRatio;
                 exfilRate *= lossRatio; 
             }
         }
-    }
-
+ 
     // --- save evap & infil losses at the node
     Storage[Node[j].subIndex].evapLoss = evapRate * tStep;
     Storage[Node[j].subIndex].exfilLoss = exfilRate * tStep;
@@ -1210,7 +1212,7 @@ int outfall_readParams(int j, int k, char* tok[], int ntoks)
 //
 {
     int    i, m, n;
-    double x[7];                                                               //(5.1.008)
+    double x[7];
     char*  id;
 
     if ( ntoks < 3 ) return error_setInpError(ERR_ITEMS, "");
@@ -1258,14 +1260,12 @@ int outfall_readParams(int j, int k, char* tok[], int ntoks)
         x[5] = m;
     }
 
-////  Added for release 5.1.008.  ////                                         //(5.1.008)
     if ( ntoks == n+1)
     {
         m = project_findObject(SUBCATCH, tok[n]);
         if ( m < 0 ) return error_setInpError(ERR_NAME, tok[n]);
         x[6] = m;
     }
-////
 
     Node[j].ID = id;
     node_setParams(j, OUTFALL, k, x);

@@ -4,7 +4,7 @@
 //   Project:  EPA SWMM5
 //   Version:  5.1
 //   Date:     03/20/14   (Build 5.1.001)
-//             03/14/17   (Build 5.1.012)
+//             05/10/18   (Build 5.1.013)
 //   Author:   L. Rossman
 //
 //   Culvert equations for SWMM5
@@ -12,9 +12,8 @@
 //   Computes flow reduction in a culvert-type conduit due to
 //   inlet control using equations from the FHWA HEC-5 circular.
 //
-//   Build 5.1.012:
-//   - Corrected value of Slope Correction Factor for mitered inlets.
-//
+//   Build 5.1.013:
+//   - C parameter corrected for Arch, Corrugated Metal, Mitered culvert. 
 //-----------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE
 
@@ -109,7 +108,7 @@ static const double Params[58][5] = {
 
     // Arch, Corrugated Metal
     {1.0, 0.0083, 2.00, 0.0379, 0.69},  //90 deg headwall
-    {1.0, 0.0300, 1.00, 0.0463, 0.75},  //Mitered to slope
+    {1.0, 0.0300, 1.00, 0.0473, 0.75},  //Mitered to slope                     //(5.1.013)
     {1.0, 0.0340, 1.50, 0.0496, 0.57},  //Thin wall projecting
 
     // Circular Culvert
@@ -201,12 +200,12 @@ double culvert_getInflow(int j, double q0, double h)
     culvert.yFull = culvert.xsect->yFull;
     culvert.ad = culvert.xsect->aFull * sqrt(culvert.yFull);
 
-    // --- slope correction factor (-0.7 for mitered inlets, 0.5 for others)   //(5.1.012)
+    // --- slope correction factor (-7 for mitered inlets, 0.5 for others)
     switch (code)
     {
     case 5:
     case 37:
-    case 46: culvert.scf = -0.7 * Conduit[k].slope; break;                     //(5.1.012)
+    case 46: culvert.scf = -7.0 * Conduit[k].slope; break;
     default: culvert.scf = 0.5 * Conduit[k].slope;
     }
 

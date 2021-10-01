@@ -8,6 +8,7 @@
 //             04/23/14  (Build 5.1.005)
 //             03/19/15  (Build 5.1.008)
 //             08/01/16  (Build 5.1.011)
+//             04/01/20  (Build 5.1.015)
 //   Author:   L. Rossman (EPA)
 //
 //   Hot Start file functions.
@@ -37,6 +38,8 @@
 //   Build 5.1.011:
 //   - Link control setting bug when reading a hot start file fixed.    
 //
+//   Build 5.1.015:
+//   - Support added for multiple infiltration methods within a project.
 //-----------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE
 
@@ -55,7 +58,7 @@ static int fileVersion;
 //  External functions (declared in funcs.h)
 //-----------------------------------------------------------------------------
 // hotstart_open                          (called by swmm_start in swmm5.c)
-// hotstart_close                         (called by swmm_end in swmm5.c)      //(5.1.005)
+// hotstart_close                         (called by swmm_end in swmm5.c)
 
 //-----------------------------------------------------------------------------
 // Function declarations
@@ -76,15 +79,6 @@ int hotstart_open()
     // --- open hot start files
     if ( !openHotstartFile1() ) return FALSE;       //input hot start file
     if ( !openHotstartFile2() ) return FALSE;       //output hot start file
-
-    ////  Following lines removed. ////                                            //(5.1.005)
-    //if ( Fhotstart1.file )
-    //{
-    //    readRunoff();
-    //    readRouting();
-    //    fclose(Fhotstart1.file);
-    //}
-
     return TRUE;
 }
 
@@ -120,7 +114,7 @@ int openHotstartFile1()
     char  fStampx[]    = "SWMM5-HOTSTARTx";
     char  fileStamp2[] = "SWMM5-HOTSTART2";
     char  fileStamp3[] = "SWMM5-HOTSTART3";
-    char  fileStamp4[] = "SWMM5-HOTSTART4";                                    //(5.1.008)
+    char  fileStamp4[] = "SWMM5-HOTSTART4";
 
     // --- try to open the file
     if ( Fhotstart1.mode != USE_FILE ) return TRUE;
@@ -132,7 +126,7 @@ int openHotstartFile1()
 
     // --- check that file contains proper header records
     fread(fStampx, sizeof(char), strlen(fileStamp2), Fhotstart1.file);
-    if      ( strcmp(fStampx, fileStamp4) == 0 ) fileVersion = 4;              //(5.1.008)
+    if      ( strcmp(fStampx, fileStamp4) == 0 ) fileVersion = 4;
     else if ( strcmp(fStampx, fileStamp3) == 0 ) fileVersion = 3;
     else if ( strcmp(fStampx, fileStamp2) == 0 ) fileVersion = 2;
     else
@@ -153,12 +147,12 @@ int openHotstartFile1()
     nPollut = -1;
     nLandUses = -1;
     flowUnits = -1;
-    if ( fileVersion >= 2 )                                                    //(5.1.002)
+    if ( fileVersion >= 2 )
     {    
         fread(&nSubcatch, sizeof(int), 1, Fhotstart1.file);
     }
     else nSubcatch = Nobjects[SUBCATCH];
-    if ( fileVersion >= 3 )                                                    //(5.1.008)
+    if ( fileVersion >= 3 )
     {
         fread(&nLandUses, sizeof(int), 1, Fhotstart1.file);
     }
@@ -179,7 +173,7 @@ int openHotstartFile1()
     }
 
     // --- read contents of the file and close it
-    if ( fileVersion >= 3 ) readRunoff();                                      //(5.1.008)
+    if ( fileVersion >= 3 ) readRunoff();
     readRouting();
     fclose(Fhotstart1.file);
     if ( ErrorCode ) return FALSE;
@@ -201,7 +195,7 @@ int openHotstartFile2()
     int   nLinks;
     int   nPollut;
     int   flowUnits;
-    char  fileStamp[] = "SWMM5-HOTSTART4";                                     //(5.1.008)
+    char  fileStamp[] = "SWMM5-HOTSTART4";
 
     // --- try to open file
     if ( Fhotstart2.mode != SAVE_FILE ) return TRUE;
@@ -246,14 +240,12 @@ void  saveRouting()
         x[1] = (float)Node[i].newLatFlow;
         fwrite(x, sizeof(float), 2, Fhotstart2.file);
 
-////  New code added to release 5.1.008.  ////                                 //(5.1.008)
         if ( Node[i].type == STORAGE )
         {
             j = Node[i].subIndex;
             x[0] = (float)Storage[j].hrt;
             fwrite(&x[0], sizeof(float), 1, Fhotstart2.file);
         }
-////
 
         for (j = 0; j < Nobjects[POLLUT]; j++)
         {
@@ -317,14 +309,12 @@ void readRouting()
         if ( !readFloat(&x, f) ) return;
         Node[i].newLatFlow = x;
 
-////  New code added to release 5.1.008.  ////                                 //(5.1.008)
         if ( fileVersion >= 4 &&  Node[i].type == STORAGE )
         {
             if ( !readFloat(&x, f) ) return;
             j = Node[i].subIndex;
             Storage[j].hrt = x;
         }
-////
 
         for (j = 0; j < Nobjects[POLLUT]; j++)
         {
@@ -352,12 +342,11 @@ void readRouting()
         if ( !readFloat(&x, f) ) return;
         Link[i].setting = x;
 
-////  Following code section moved to here.  ////                              //(5.1.011)
         // --- set link's target setting to saved setting 
         Link[i].targetSetting = x;
         link_setTargetSetting(i);
         link_setSetting(i, 0.0);
-////
+
         for (j = 0; j < Nobjects[POLLUT]; j++)
         {
             if ( !readFloat(&x, f) ) return;
@@ -392,7 +381,7 @@ void  saveRunoff(void)
 
         // Infiltration state (max. of 6 elements)
         for (j=0; j<sizeX; j++) x[j] = 0.0;
-        infil_getState(i, InfilModel, x);
+        infil_getState(i, x);                                                  //(5.1.015)
         fwrite(x, sizeof(double), 6, f);
 
         // Groundwater state (4 elements)
@@ -413,7 +402,7 @@ void  saveRunoff(void)
         }
 
         // Water quality
-        if ( Nobjects[POLLUT] > 0 )                                            //(5.1.008)
+        if ( Nobjects[POLLUT] > 0 )
         {
             // Runoff quality
             for (j=0; j<Nobjects[POLLUT]; j++) x[j] = Subcatch[i].newQual[j];
@@ -457,11 +446,11 @@ void  readRunoff()
         {
             if ( !readDouble(&Subcatch[i].subArea[j].depth, f) ) return;
         }
-        if ( !readDouble(&Subcatch[i].newRunoff, f) ) return;                  //(5.1.008)
+        if ( !readDouble(&Subcatch[i].newRunoff, f) ) return;
 
         // Infiltration state (max. of 6 elements)
         for (j=0; j<6; j++) if ( !readDouble(&x[j], f) ) return;
-        infil_setState(i, InfilModel, x);
+        infil_setState(i, x);                                                  //(5.1.015)
 
         // Groundwater state (4 elements)
         if ( Subcatch[i].groundwater != NULL )
@@ -475,17 +464,17 @@ void  readRunoff()
         {
             for (j=0; j<3; j++) 
             {
-                for (k=0; k<5; k++) if ( !readDouble(&x[k], f) ) return;       //(5.1.008)
+                for (k=0; k<5; k++) if ( !readDouble(&x[k], f) ) return;
                 snow_setState(i, j, x);
             }
         }
 
         // Water quality
-        if ( Nobjects[POLLUT] > 0 )                                            //(5.1.008)
+        if ( Nobjects[POLLUT] > 0 ) 
         {
             // Runoff quality
             for (j=0; j<Nobjects[POLLUT]; j++)
-                if ( ! readDouble(&Subcatch[i].newQual[j], f) ) return;        //(5.1.008)
+                if ( ! readDouble(&Subcatch[i].newQual[j], f) ) return;
 
             // Ponded quality
             for (j=0; j<Nobjects[POLLUT]; j++)

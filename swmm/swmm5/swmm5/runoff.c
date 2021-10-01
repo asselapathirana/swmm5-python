@@ -8,6 +8,7 @@
 //             03/19/15   (Build 5.1.008)
 //             08/01/16   (Build 5.1.011)
 //             03/14/17   (Build 5.1.012)
+//             03/01/20   (Build 5.1.014)
 //   Author:   L. Rossman
 //             M. Tryby
 //
@@ -29,12 +30,15 @@
 //
 //   Build 5.1.012:
 //   - Runoff wet time step no longer kept aligned with reporting times.
+//
+//   Build 5.1.014:
+//   - Fixed street sweeping bug.
 //-----------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include "headers.h"
 #include "odesolve.h"
 
@@ -52,7 +56,7 @@ static long  MaxStepsPos;              // position in Runoff interface file
 //-----------------------------------------------------------------------------
 //  Exportable variables 
 //-----------------------------------------------------------------------------
-char    HasWetLids;  // TRUE if any LIDs are wet (used in lidproc.c)           //(5.1.008)
+char    HasWetLids;  // TRUE if any LIDs are wet (used in lidproc.c)
 double* OutflowLoad; // exported pollutant mass load (used in surfqual.c)
 
 //-----------------------------------------------------------------------------
@@ -74,7 +78,7 @@ static double runoff_getTimeStep(DateTime currentDate);
 static void   runoff_initFile(void);
 static void   runoff_readFromFile(void);
 static void   runoff_saveToFile(float tStep);
-static void   runoff_getOutfallRunon(double tStep);                            //(5.1.008)
+static void   runoff_getOutfallRunon(double tStep);
 
 //=============================================================================
 
@@ -93,7 +97,7 @@ int runoff_open()
     // --- open the Ordinary Differential Equation solver
     if ( !odesolve_open(MAXODES) ) report_writeErrorMsg(ERR_ODE_SOLVER, "");
 
-    // --- allocate memory for pollutant runoff loads                          //(5.1.008)
+    // --- allocate memory for pollutant runoff loads
     OutflowLoad = NULL;
     if ( Nobjects[POLLUT] > 0 )
     {
@@ -115,8 +119,6 @@ int runoff_open()
         else runoff_initFile();
         break;
     }
-
-////  Call to climate_openFile() moved to climate_validate().  ////            //(5.1.007)
     return ErrorCode;
 }
 
@@ -132,7 +134,7 @@ void runoff_close()
     // --- close the ODE solver
     odesolve_close();
 
-    // --- free memory for pollutant runoff loads                              //(5.1.008)
+    // --- free memory for pollutant runoff loads
     FREE(OutflowLoad);
 
     // --- close runoff interface file if in use
@@ -163,15 +165,15 @@ void runoff_execute()
     int      j;                        // object index
     int      day;                      // day of calendar year
     double   runoffStep;               // runoff time step (sec)
-    double   oldRunoffStep;            // previous runoff time step (sec)      //(5.1.011)
+    double   oldRunoffStep;            // previous runoff time step (sec)
     double   runoff;                   // subcatchment runoff (ft/sec)
     DateTime currentDate;              // current date/time 
     char     canSweep;                 // TRUE if street sweeping can occur
 
     if ( ErrorCode ) return;
 
-    // --- find previous runoff time step in sec                               //(5.1.011)
-    oldRunoffStep = (NewRunoffTime - OldRunoffTime) / 1000.0;                  //(5.1.011)
+    // --- find previous runoff time step in sec
+    oldRunoffStep = (NewRunoffTime - OldRunoffTime) / 1000.0;
 
     // --- convert elapsed runoff time in milliseconds to a calendar date
     currentDate = getDateTime(NewRunoffTime);
@@ -184,7 +186,7 @@ void runoff_execute()
     {
         OldRunoffTime = NewRunoffTime;
         NewRunoffTime += (double)(1000 * DryStep);
-        NewRunoffTime = MIN(NewRunoffTime, TotalDuration);                     //(5.1.008)
+        NewRunoffTime = MIN(NewRunoffTime, TotalDuration);
         return;
     }
 
@@ -207,7 +209,11 @@ void runoff_execute()
 
     // --- see if street sweeping can occur on current date
     day = datetime_dayOfYear(currentDate);
-    if ( day >= SweepStart && day <= SweepEnd ) canSweep = TRUE;
+    if ( SweepStart <= SweepEnd )
+    {
+        if ( day >= SweepStart && day <= SweepEnd ) canSweep = TRUE;
+    }
+    else if ( day <= SweepEnd || day >= SweepStart ) canSweep = TRUE;
     else canSweep = FALSE;
 
     // --- get runoff time step (in seconds)
@@ -222,26 +228,23 @@ void runoff_execute()
     OldRunoffTime = NewRunoffTime;
     NewRunoffTime += (double)(1000 * runoffStep);
 
-////  Following code segment added to release 5.1.008.  ////                   //(5.1.008)
-////
     // --- adjust runoff step so that total duration not exceeded
     if ( NewRunoffTime > TotalDuration )
     {
         runoffStep = (TotalDuration - OldRunoffTime) / 1000.0;
         NewRunoffTime = TotalDuration;
     }
-////
 
     // --- update old state of each subcatchment, 
     for (j = 0; j < Nobjects[SUBCATCH]; j++) subcatch_setOldState(j);
 
-    // --- determine any runon from drainage system outfall nodes              //(5.1.008)
-    if ( oldRunoffStep > 0.0 ) runoff_getOutfallRunon(oldRunoffStep);          //(5.1.011)
+    // --- determine any runon from drainage system outfall nodes
+    if ( oldRunoffStep > 0.0 ) runoff_getOutfallRunon(oldRunoffStep);
 
     // --- determine runon from upstream subcatchments, and implement snow removal
     for (j = 0; j < Nobjects[SUBCATCH]; j++)
     {
-        if ( Subcatch[j].area == 0.0 ) continue;                               //(5.1.008)
+        if ( Subcatch[j].area == 0.0 ) continue;
         subcatch_getRunon(j);
         if ( !IgnoreSnowmelt ) snow_plowSnow(j, runoffStep);
     }
@@ -249,13 +252,13 @@ void runoff_execute()
     // --- determine runoff and pollutant buildup/washoff in each subcatchment
     HasSnow = FALSE;
     HasRunoff = FALSE;
-    HasWetLids = FALSE;                                                        //(5.1.008)
+    HasWetLids = FALSE;
     for (j = 0; j < Nobjects[SUBCATCH]; j++)
     {
         // --- find total runoff rate (in ft/sec) over the subcatchment
         //     (the amount that actually leaves the subcatchment (in cfs)
         //     is also computed and is stored in Subcatch[j].newRunoff)
-        if ( Subcatch[j].area == 0.0 ) continue;                               //(5.1.008)
+        if ( Subcatch[j].area == 0.0 ) continue;
         runoff = subcatch_getRunoff(j, runoffStep);
 
         // --- update state of study area surfaces
@@ -305,8 +308,8 @@ double runoff_getTimeStep(DateTime currentDate)
 
     // --- find shortest time until next evaporation or rainfall value
     //     (this represents the maximum possible time step)
-    timeStep = datetime_timeDiff(climate_getNextEvapDate(), currentDate);      //(5.1.008)
-    if ( timeStep > 0.0 && timeStep < maxStep ) maxStep = timeStep;            //(5.1.008)
+    timeStep = datetime_timeDiff(climate_getNextEvapDate(), currentDate);
+    if ( timeStep > 0.0 && timeStep < maxStep ) maxStep = timeStep;
     for (j = 0; j < Nobjects[GAGE]; j++)
     {
         timeStep = datetime_timeDiff(gage_getNextRainDate(j, currentDate),
@@ -314,13 +317,11 @@ double runoff_getTimeStep(DateTime currentDate)
         if ( timeStep > 0 && timeStep < maxStep ) maxStep = timeStep;
     }
 
-////  Following code segment modified for release 5.1.012.  ////               //(5.1.012)
     // --- determine whether wet or dry time step applies
     if ( IsRaining || HasSnow || HasRunoff || HasWetLids )
     {
         timeStep = WetStep;
     }
-////
     else timeStep = DryStep;
 
     // --- limit time step if necessary
@@ -479,20 +480,19 @@ void  runoff_readFromFile(void)
     // --- update runoff time clock
     OldRunoffTime = NewRunoffTime;
     NewRunoffTime = OldRunoffTime + (double)(tStep)*1000.0;
-    NewRunoffTime = MIN(NewRunoffTime, TotalDuration);                         //(5.1.008)
+    NewRunoffTime = MIN(NewRunoffTime, TotalDuration);
     Nsteps++;
 }
 
 //=============================================================================
 
-////  New function added for release 5.1.008.  ////                            //(5.1.008)
 
 void runoff_getOutfallRunon(double tStep)
 //
-//  Input:   tStep = previous runoff time step (sec)                           //(5.1.011)
+//  Input:   tStep = previous runoff time step (sec)
 //  Output:  none
-//  Purpose: adds flow and pollutant loads leaving drainage system outfalls    //(5.1.011)
-//           during the previous runoff time step to designated subcatchments. //(5.1.011)
+//  Purpose: adds flow and pollutant loads leaving drainage system outfalls
+//           during the previous runoff time step to designated subcatchments.
 //
 {
     int i, k, p;

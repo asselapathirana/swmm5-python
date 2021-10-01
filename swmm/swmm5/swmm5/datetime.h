@@ -18,6 +18,10 @@
 //   - New getTimeStamp function added.
 //-----------------------------------------------------------------------------
 
+#ifndef DATETIME_H
+#define DATETIME_H
+
+
 typedef double DateTime;
 
 #define Y_M_D 0
@@ -46,8 +50,8 @@ int  datetime_daysPerMonth(int year, int month);
 // Functions for converting a DateTime value to a string
 void datetime_dateToStr(DateTime date, char* s);
 void datetime_timeToStr(DateTime time, char* s);
-void datetime_getTimeStamp(int fmt, DateTime aDate, int stampSize,             //5.1.011
-                           char* timeStamp);                                   //5.1.011
+void datetime_getTimeStamp(int fmt, DateTime aDate, int stampSize,
+                           char* timeStamp);
 
 // Functions for converting a string date or time to a DateTime value
 int  datetime_findMonth(char* s);
@@ -61,3 +65,6 @@ void datetime_setDateFormat(int fmt);
 DateTime datetime_addSeconds(DateTime date1, double seconds);
 DateTime datetime_addDays(DateTime date1, DateTime date2);
 long     datetime_timeDiff(DateTime date1, DateTime date2);
+
+
+#endif //DATETIME_H

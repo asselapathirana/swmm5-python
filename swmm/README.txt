@@ -4,6 +4,7 @@ Released under GNU GPL v.3
 
 Release History:
 ----------------
+version 5.1.015 released in 2021
 
 version 1.0.0.1 first production (non-beta) release. 
 
@@ -69,9 +70,9 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
-    '5.1.000'
+    '5.1.015'
     >>> st.SWMM5_VERSION            # same thing as an integer 
-    51000
+    51015
     >>> st.Flow_Units()           # Flow units. 
     'LPS'
     >>> st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  
@@ -184,12 +185,12 @@ One should always use the new interface. The old interface (below) is left only 
      0.00
      0.00
      3.21
-    13.50
-    27.90
-    45.63
-    64.32
-    82.79
-    101.84
+    12.02
+    25.68
+    43.48
+    61.88
+    78.69
+    100.23
     >>> r=st.Results('SYS','SYS', 1)  #1 Rainfall (in/hr or mm/hr). This time we use the generator directly. 
     >>> print ("\n".join(["%5.2f"% (i) for i in  r]))  #doctest: +ELLIPSIS
      0.00
@@ -238,11 +239,11 @@ One should always use the new interface. The old interface (below) is left only 
      0.00
      0.00
      0.00
-    13.26
-    14.10
-    14.70
-    15.23
-    15.69
+    10.73
+    13.97
+    14.58
+    15.14
+    15.64
 
     >>> wq.Link()
     ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11']
@@ -256,16 +257,11 @@ One should always use the new interface. The old interface (below) is left only 
      0.00
      0.00
      0.00
-     5.42
-     9.96
-    12.76
-    14.77
-    16.43
-    17.91
-    19.27
-    20.56
+     5.55
+     9.98
+    12.72
     ...
-    44.65
+    44.95
 
    
 :Example 5: Tracking output files

@@ -6,6 +6,7 @@
 //   Date:    03/20/14  (Build 5.1.001)
 //            03/19/15  (Build 5.1.008)
 //            08/05/15  (Build 5.1.010)
+//            04/14/20  (Build 5.1.015)
 //   Author:  L. Rossman
 //
 //   Error messages
@@ -16,6 +17,8 @@
 //   Build 5.1.010:
 //   - Text of Error 318 for rainfall data files modified.
 //
+//   Build 5.1.015:
+//   - Added new Error 140 for storage nodes.
 //-----------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE
 
@@ -55,6 +58,8 @@
 #define ERR138 \
 "\n  ERROR 138: Node %s has initial depth greater than maximum depth."
 #define ERR139 "\n  ERROR 139: Regulator %s is the outlet of a non-storage node."
+#define ERR140 \
+"\n  ERROR 140: Storage node %s has negative volume at full depth."            //(5.1.015) 
 #define ERR141 \
 "\n  ERROR 141: Outfall %s has more than 1 inlet link or an outlet link."
 #define ERR143 "\n  ERROR 143: Regulator %s has invalid cross-section shape."
@@ -168,6 +173,17 @@
 "\n  ERROR 405: amount of output produced will exceed maximum file size;" \
 "\n             either reduce Ending Date or increase Reporting Time Step."
 
+// API Error Keys
+#define ERR501 "\n API Key Error: Object Type Outside Bonds"
+#define ERR502 "\n API Key Error: Network Not Initialized (Input file open?)"
+#define ERR503 "\n API Key Error: Simulation Not Running"
+#define ERR504 "\n API Key Error: Incorrect object type for parameter chosen"
+#define ERR505 "\n API Key Error: Object index out of Bounds."
+#define ERR506 "\n API Key Error: Invalid Pollutant Index"
+#define ERR507 "\n API Key Error: Invalid Inflow Type"
+#define ERR508 "\n API Key Error: Invalid Timeseries Index"
+#define ERR509 "\n API Key Error: Invalid Pattern Index"
+
 ////////////////////////////////////////////////////////////////////////////
 //  NOTE: Need to update ErrorMsgs[], ErrorCodes[], and ErrorType
 //        (in error.h) whenever a new error message is added.
@@ -185,7 +201,8 @@ char* ErrorMsgs[] =
       ERR313, ERR315, ERR317, ERR318, ERR319, ERR320, ERR321, ERR323, ERR325,
       ERR327, ERR329, ERR330, ERR331, ERR333, ERR335, ERR336, ERR337, ERR338,
       ERR339, ERR341, ERR343, ERR345, ERR351, ERR353, ERR355, ERR357, ERR361,
-      ERR363, ERR401, ERR402, ERR403, ERR405};
+      ERR363, ERR401, ERR402, ERR403, ERR405, ERR501, ERR502, ERR503, ERR504,
+	  ERR505, ERR506, ERR507, ERR508, ERR509, ERR140};                         //(5.1.015)
 
 int ErrorCodes[] =
     { 0,      101,    103,    105,    107,    108,    109,    110,    111,
@@ -199,7 +216,8 @@ int ErrorCodes[] =
       313,    315,    317,    318,    319,    320,    321,    323,    325,
       327,    329,    330,    331,    333,    335,    336,    337,    338,
       339,    341,    343,    345,    351,    353,    355,    357,    361,
-      363,    401,    402,    403,    405};
+      363,    401,    402,    403,    405,    501,    502,    503,    504,
+	  505,    506,    507,    508,    509,    140};                            //(5.1.015)
 
 char  ErrString[256];
 

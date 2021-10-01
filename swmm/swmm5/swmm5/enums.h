@@ -9,6 +9,7 @@
 //            03/19/15  (Build 5.1.008)
 //            08/05/15  (Build 5.1.010)
 //            08/01/16  (Build 5.1.011)
+//            05/10/18  (Build 5.1.013)
 //   Author:  L. Rossman
 //
 //   Enumerated variables
@@ -32,7 +33,15 @@
 //   Build 5.1.011:
 //   - s_EVENT added to InputSectionType enumeration.
 //
+//   Build 5.1.013:
+//   - SURCHARGE_METHOD and RULE_STEP options added.
+//   - WEIR_CURVE added as a curve type.
+//
 //-----------------------------------------------------------------------------
+
+#ifndef ENUMS_H
+#define ENUMS_H
+
 
 //-------------------------------------
 // Names of major object types
@@ -108,18 +117,18 @@
 // Cross section shape types
 //-------------------------------------
  enum XsectType {
-      DUMMY,                           // 0      
+      DUMMY,                           // 0
       CIRCULAR,                        // 1      closed
       FILLED_CIRCULAR,                 // 2      closed
       RECT_CLOSED,                     // 3      closed
-      RECT_OPEN,                       // 4       
-      TRAPEZOIDAL,                     // 5       
-      TRIANGULAR,                      // 6       
+      RECT_OPEN,                       // 4
+      TRAPEZOIDAL,                     // 5
+      TRIANGULAR,                      // 6
       PARABOLIC,                       // 7
-      POWERFUNC,                       // 8      
-      RECT_TRIANG,                     // 9       
+      POWERFUNC,                       // 8
+      RECT_TRIANG,                     // 9
       RECT_ROUND,                      // 10
-      MOD_BASKET,                      // 11      
+      MOD_BASKET,                      // 11
       HORIZ_ELLIPSE,                   // 12     closed
       VERT_ELLIPSE,                    // 13     closed
       ARCH,                            // 14     closed
@@ -188,7 +197,7 @@
 //-------------------------------------
 // Computed node quantities
 //-------------------------------------
- #define MAX_NODE_RESULTS 7 
+ #define MAX_NODE_RESULTS 7
  enum NodeResultType {
       NODE_DEPTH,                      // water depth above invert
       NODE_HEAD,                       // hydraulic head
@@ -213,7 +222,7 @@
 //-------------------------------------
 // System-wide flow quantities
 //-------------------------------------
-#define MAX_SYS_RESULTS 15                                                     //(5.1.010)
+#define MAX_SYS_RESULTS 15
 enum SysFlowType {
      SYS_TEMPERATURE,                  // air temperature
      SYS_RAINFALL,                     // rainfall intensity
@@ -229,12 +238,11 @@ enum SysFlowType {
      SYS_OUTFLOW,                      // outfall outflow
      SYS_STORAGE,                      // storage volume
      SYS_EVAP,                         // evaporation
-     SYS_PET};                         // potential ET                         //(5.1.010)
+     SYS_PET};                         // potential ET
 
 //-------------------------------------
 // Conduit flow classifications
 //-------------------------------------
-// #define MAX_FLOW_CLASSES 7                                                  //(5.1.008)
  enum FlowClassType {
       DRY,                             // dry conduit
       UP_DRY,                          // upstream end is dry
@@ -243,13 +251,11 @@ enum SysFlowType {
       SUPCRITICAL,                     // super-critical flow
       UP_CRITICAL,                     // free-fall at upstream end
       DN_CRITICAL,                     // free-fall at downstream end
-      MAX_FLOW_CLASSES,                // number of distinct flow classes      //(5.1.008)
-      UP_FULL,                         // upstream end is full                 //(5.1.008)
-      DN_FULL,                         // downstream end is full               //(5.1.008)
-      ALL_FULL};                       // completely full                      //(5.1.008)
+      MAX_FLOW_CLASSES,                // number of distinct flow classes
+      UP_FULL,                         // upstream end is full
+      DN_FULL,                         // downstream end is full
+      ALL_FULL};                       // completely full
 
-
-////  Added to release 5.1.008.  ////                                          //(5.1.008)
 //------------------------
 // Runoff flow categories
 //------------------------
@@ -360,6 +366,11 @@ enum  CompatibilityType {
       PARTIAL_DAMPING,                 // partial damping
       FULL_DAMPING};                   // full damping
 
+////  Added to release 5.1.013.  ////                                          //(5.1.013)
+ enum  SurchargeMethodType {
+      EXTRAN,                          // original EXTRAN method
+      SLOT};                           // Preissmann slot method
+
  enum InflowType {
       EXTERNAL_INFLOW,                 // user-supplied external inflow
       DRY_WEATHER_INFLOW,              // user-supplied dry weather inflow
@@ -403,7 +414,7 @@ enum  CompatibilityType {
 
  enum PumpCurveType {
       TYPE1_PUMP,                      // flow varies stepwise with wet well volume
-      TYPE2_PUMP,                      // flow varies stepwise with inlet depth 
+      TYPE2_PUMP,                      // flow varies stepwise with inlet depth
       TYPE3_PUMP,                      // flow varies with head delivered
       TYPE4_PUMP,                      // flow varies with inlet depth
       IDEAL_PUMP};                     // outflow equals inflow
@@ -417,7 +428,7 @@ enum  CompatibilityType {
       SIDEFLOW_WEIR,                   // side flow weir
       VNOTCH_WEIR,                     // V-notch (triangular) weir
       TRAPEZOIDAL_WEIR,                // trapezoidal weir
-      ROADWAY_WEIR};                   // FHWA HDS-5 roadway weir              //(5.1.010)
+      ROADWAY_WEIR};                   // FHWA HDS-5 roadway weir
 
  enum CurveType {
       STORAGE_CURVE,                   // surf. area v. depth for storage node
@@ -426,6 +437,7 @@ enum  CompatibilityType {
       RATING_CURVE,                    // flow rate v. head for outlet link
       CONTROL_CURVE,                   // control setting v. controller variable
       SHAPE_CURVE,                     // width v. depth for custom x-section
+      WEIR_CURVE,                      // discharge coeff. v. head for weir    //(5.1.013)
       PUMP1_CURVE,                     // flow v. wet well volume for pump
       PUMP2_CURVE,                     // flow v. depth for pump (discrete)
       PUMP3_CURVE,                     // flow v. head for pump (continuous)
@@ -444,24 +456,24 @@ enum  CompatibilityType {
       s_TREATMENT,    s_CURVE,        s_TIMESERIES,   s_REPORT,
       s_COORDINATE,   s_VERTICES,     s_POLYGON,      s_LABEL,
       s_SYMBOL,       s_BACKDROP,     s_TAG,          s_PROFILE,
-      s_MAP,          s_LID_CONTROL,  s_LID_USAGE,    s_GWF,                   //(5.1.007)
-      s_ADJUST,       s_EVENT};                                                //(5.1.011)
+      s_MAP,          s_LID_CONTROL,  s_LID_USAGE,    s_GWF,
+      s_ADJUST,       s_EVENT};
 
  enum InputOptionType {
-      FLOW_UNITS,        INFIL_MODEL,       ROUTE_MODEL, 
-      START_DATE,        START_TIME,        END_DATE,
-      END_TIME,          REPORT_START_DATE, REPORT_START_TIME,
-      SWEEP_START,       SWEEP_END,         START_DRY_DAYS,
-      WET_STEP,          DRY_STEP,          ROUTE_STEP,
-      REPORT_STEP,       ALLOW_PONDING,     INERT_DAMPING,
-      SLOPE_WEIGHTING,   VARIABLE_STEP,     NORMAL_FLOW_LTD,
-      LENGTHENING_STEP,  MIN_SURFAREA,      COMPATIBILITY,
-      SKIP_STEADY_STATE, TEMPDIR,           IGNORE_RAINFALL,
-      FORCE_MAIN_EQN,    LINK_OFFSETS,      MIN_SLOPE,
-      IGNORE_SNOWMELT,   IGNORE_GWATER,     IGNORE_ROUTING,
-      IGNORE_QUALITY,    MAX_TRIALS,        HEAD_TOL,
-      SYS_FLOW_TOL,      LAT_FLOW_TOL,      IGNORE_RDII,                       //(5.1.004)
-      MIN_ROUTE_STEP,    NUM_THREADS};                                         //(5.1.008)
+    FLOW_UNITS, INFIL_MODEL, ROUTE_MODEL,
+    START_DATE, START_TIME, END_DATE,
+    END_TIME, REPORT_START_DATE, REPORT_START_TIME,
+    SWEEP_START, SWEEP_END, START_DRY_DAYS,
+    WET_STEP, DRY_STEP, ROUTE_STEP, RULE_STEP,                                   //(5.1.013)
+    REPORT_STEP, ALLOW_PONDING, INERT_DAMPING,
+    SLOPE_WEIGHTING, VARIABLE_STEP, NORMAL_FLOW_LTD,
+    LENGTHENING_STEP, MIN_SURFAREA, COMPATIBILITY,
+    SKIP_STEADY_STATE, TEMPDIR, IGNORE_RAINFALL,
+    FORCE_MAIN_EQN, LINK_OFFSETS, MIN_SLOPE,
+    IGNORE_SNOWMELT, IGNORE_GWATER, IGNORE_ROUTING,
+    IGNORE_QUALITY, MAX_TRIALS, HEAD_TOL,
+    SYS_FLOW_TOL, LAT_FLOW_TOL, IGNORE_RDII,
+    MIN_ROUTE_STEP, NUM_THREADS, SURCHARGE_METHOD};                              //(5.1.013)
 
 enum  NoYesType {
       NO,
@@ -471,3 +483,6 @@ enum  NoneAllType {
       NONE,
       ALL,
       SOME};
+
+
+#endif //ENUMS_H

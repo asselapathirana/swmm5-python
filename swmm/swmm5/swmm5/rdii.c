@@ -7,6 +7,7 @@
 //             04/04/14   (Build 5.1.003)
 //             04/14/14   (Build 5.1.004)
 //             09/15/14   (Build 5.1.007)
+//             03/01/20   (Build 5.1.014)
 //   Author:   L. Rossman (EPA)
 //             R. Dickinson (CDM)
 //
@@ -19,12 +20,14 @@
 //   - Ignore RDII option implemented.
 //   - Rainfall climate adjustment implemented.
 //
+//   Build 5.1.014:
+//   - Fixes bug related to isUsed property of a unit hydrograph's rain gage.
 //-----------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <math.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include "headers.h"
 
 //-----------------------------------------------------------------------------
@@ -75,7 +78,7 @@ static TUHGroup*  UHGroup;             // processing data for each UH group
 static int        RdiiStep;            // RDII time step (sec)
 static int        NumRdiiNodes;        // number of nodes w/ RDII data
 static int*       RdiiNodeIndex;       // indexes of nodes w/ RDII data
-static REAL4*     RdiiNodeFlow;        // inflows for nodes with RDII          //(5.1.003)
+static REAL4*     RdiiNodeFlow;        // inflows for nodes with RDII
 static int        RdiiFlowUnits;       // RDII flow units code
 static DateTime   RdiiStartDate;       // start date of RDII inflow period
 static DateTime   RdiiEndDate;         // end date of RDII inflow period
@@ -86,8 +89,14 @@ static int        RdiiFileType;        // type (binary/text) of RDII file
 //-----------------------------------------------------------------------------
 // Imported Variables
 //-----------------------------------------------------------------------------
-extern double     Qcf[];               // flow units conversion factors
+#ifdef __cplusplus
+extern const double Qcf[];             // flow units conversion factors
                                        // (see swmm5.c)
+#else
+extern double Qcf[];                   // flow units conversion factors
+                                       // (see swmm5.c)
+#endif 
+
 //-----------------------------------------------------------------------------
 //  External functions (declared in funcs.h)
 //-----------------------------------------------------------------------------
@@ -240,6 +249,7 @@ int rdii_readUnitHydParams(char* tok[], int ntoks)
         g = project_findObject(GAGE, tok[1]);
         if ( g < 0 ) return error_setInpError(ERR_NAME, tok[1]);
         UnitHyd[j].rainGage = g;
+        Gage[g].isUsed = TRUE;
         return 0;
     }
     else if ( ntoks < 6 ) return error_setInpError(ERR_ITEMS, "");
@@ -413,7 +423,7 @@ void rdii_openRdii()
     RdiiStartDate = NO_DATE;
 
     // --- create the RDII file if existing file not being used
-    if ( IgnoreRDII ) return;                                                  //(5.1.004)
+    if ( IgnoreRDII ) return;
     if ( Frdii.mode != USE_FILE ) createRdiiFile();
     if ( Frdii.mode == NO_FILE || ErrorCode ) return;
 
@@ -568,7 +578,7 @@ int readRdiiFileHeader()
     // --- allocate memory for RdiiNodeIndex & RdiiNodeFlow arrays
     RdiiNodeIndex = (int *) calloc(NumRdiiNodes, sizeof(int));
     if ( !RdiiNodeIndex ) return ERR_MEMORY;
-    RdiiNodeFlow = (REAL4 *) calloc(NumRdiiNodes, sizeof(REAL4));              //(5.1.003)
+    RdiiNodeFlow = (REAL4 *) calloc(NumRdiiNodes, sizeof(REAL4));
     if ( !RdiiNodeFlow ) return ERR_MEMORY;
 
     // --- read indexes of RDII nodes
@@ -627,7 +637,7 @@ int readRdiiTextFileHeader()
     // --- allocate memory for RdiiNodeIndex & RdiiNodeFlow arrays
     RdiiNodeIndex = (int *) calloc(NumRdiiNodes, sizeof(int));
     if ( !RdiiNodeIndex ) return ERR_MEMORY;
-    RdiiNodeFlow = (REAL4 *) calloc(NumRdiiNodes, sizeof(REAL4));              //(5.1.003)
+    RdiiNodeFlow = (REAL4 *) calloc(NumRdiiNodes, sizeof(REAL4));
     if ( !RdiiNodeFlow ) return ERR_MEMORY;
 
     // --- read names of RDII nodes from file & save their indexes
@@ -662,7 +672,7 @@ void readRdiiFlows()
         if ( feof(Frdii.file) ) return;
         fread(&RdiiStartDate, sizeof(DateTime), 1, Frdii.file);
         if ( RdiiStartDate == NO_DATE ) return;
-        if ( fread(RdiiNodeFlow, sizeof(REAL4), NumRdiiNodes, Frdii.file)      //(5.1.003)
+        if ( fread(RdiiNodeFlow, sizeof(REAL4), NumRdiiNodes, Frdii.file)
             < (size_t)NumRdiiNodes ) RdiiStartDate = NO_DATE;
         else RdiiEndDate = datetime_addSeconds(RdiiStartDate, RdiiStep);
     }
@@ -680,7 +690,7 @@ void readRdiiTextFlows()
     int    i, n;
     int    yr = 0, mon = 0, day = 0,
 		   hr = 0, min = 0, sec = 0;   // year, month, day, hour, minute, second
-    double x;                          // RDII flow in original units          //(5.1.003)
+    double x;                          // RDII flow in original units
     char   line[MAXLINE+1];            // line from RDII data file
     char   s[MAXLINE+1];               // node ID label (not used)
 
@@ -689,10 +699,10 @@ void readRdiiTextFlows()
     {
         if ( feof(Frdii.file) ) return;
         fgets(line, MAXLINE, Frdii.file);
-        n = sscanf(line, "%s %d %d %d %d %d %d %f",
+        n = sscanf(line, "%s %d %d %d %d %d %d %lf",
             s, &yr, &mon, &day, &hr, &min, &sec, &x);
         if ( n < 8 ) return;
-        RdiiNodeFlow[i] = (REAL4)(x / Qcf[RdiiFlowUnits]);                     //(5.1.003)
+        RdiiNodeFlow[i] = (REAL4)(x / Qcf[RdiiFlowUnits]);
     }
     RdiiStartDate = datetime_encodeDate(yr, mon, day) +
                     datetime_encodeTime(hr, min, sec);
@@ -947,7 +957,7 @@ int  allocRdiiMemory()
     // --- allocate memory for RDII indexes & inflow at each node w/ RDII data
     RdiiNodeIndex = (int *) calloc(NumRdiiNodes, sizeof(int));
     if ( !RdiiNodeIndex ) return FALSE;
-    RdiiNodeFlow = (REAL4 *) calloc(NumRdiiNodes, sizeof(REAL4));              //(5.1.003)
+    RdiiNodeFlow = (REAL4 *) calloc(NumRdiiNodes, sizeof(REAL4));
     if ( !RdiiNodeFlow ) return FALSE;
     return TRUE;
 }
@@ -1044,14 +1054,11 @@ void initGageData()
         g = UnitHyd[i].rainGage;
         if ( g >= 0 )
         {
-            Gage[g].isUsed = TRUE;
-
             // --- if UH's gage uses same time series as a previous gage,
             //     then assign the latter gage to the UH
             if ( Gage[g].coGage >= 0 )
             {
                 UnitHyd[i].rainGage = Gage[g].coGage;
-                Gage[Gage[g].coGage].isUsed = TRUE;
             }
         }
     }
@@ -1181,7 +1188,7 @@ void getRainfall(DateTime currentDate)
             // --- get rainfall volume over gage's recording interval
             //     at gage'a current date (in original depth units)
             gageDate = UHGroup[j].gageDate;
-            Adjust.rainFactor = Adjust.rain[datetime_monthOfYear(gageDate)-1]; //(5.1.007)
+            Adjust.rainFactor = Adjust.rain[datetime_monthOfYear(gageDate)-1];
             if (!Gage[g].isCurrent)
             {
                 gage_setState(g, gageDate);
@@ -1478,7 +1485,7 @@ void saveRdiiFlows(DateTime currentDate)
 //
 {
     fwrite(&currentDate, sizeof(DateTime), 1, Frdii.file);
-    fwrite(RdiiNodeFlow, sizeof(REAL4), NumRdiiNodes, Frdii.file);             //(5.1.003)
+    fwrite(RdiiNodeFlow, sizeof(REAL4), NumRdiiNodes, Frdii.file);
 }
 
 //=============================================================================

@@ -6,16 +6,25 @@
 //   Date:    03/20/14   (Build 5.1.001)
 //            09/15/14   (Build 5.1.007)
 //            08/05/15   (Build 5.1.010)
+//            05/10/18   (Build 5.1.013)
+//            04/01/20   (Build 5.1.015)
 //   Author:  L. Rossman (US EPA)
 //
 //   Public interface for infiltration functions.
 //
 //   Build 5.1.010:
 //   - New Modified Green Ampt infiltration option added.
+//
+//   Build 5.1.013:
+//   - New function infil_setInfilFactor() added.
+//
+//   Build 5.1.015:
+//   - Support added for multiple infiltration methods within a project.
 //-----------------------------------------------------------------------------
 
 #ifndef INFIL_H
 #define INFIL_H
+
 
 //---------------------
 // Enumerated Constants
@@ -24,7 +33,7 @@ enum InfilType {
      HORTON,                      // Horton infiltration
      MOD_HORTON,                  // Modified Horton infiltration
      GREEN_AMPT,                  // Green-Ampt infiltration
-     MOD_GREEN_AMPT,              // Modified Green-Ampt infiltration          //(5.1.010)
+     MOD_GREEN_AMPT,              // Modified Green-Ampt infiltration
      CURVE_NUMBER};               // SCS Curve Number infiltration
 
 //---------------------
@@ -46,8 +55,6 @@ typedef struct
 //-------------------------
 // Green-Ampt Infiltration
 //-------------------------
-
-// ----  Some variable names changed for release 5.1.007  ----                 //(5.1.007)
 typedef struct
 {
    double        S;               // avg. capillary suction (ft)
@@ -91,18 +98,21 @@ extern TCurveNum* CNInfil;
 //-----------------------------------------------------------------------------
 //   Infiltration Methods
 //-----------------------------------------------------------------------------
-void    infil_create(int subcatchCount, int model);
+void    infil_create(int n);
 void    infil_delete(void);
-int     infil_readParams(int model, char* tok[], int ntoks);
-void    infil_initState(int area, int model);
-void    infil_getState(int j, int m, double x[]);
-void    infil_setState(int j, int m, double x[]);
-double  infil_getInfil(int area, int model, double tstep, double rainfall,
-        double runon, double depth);
+int     infil_readParams(int m, char* tok[], int ntoks);
+void    infil_initState(int j);
+void    infil_getState(int j, double x[]);
+void    infil_setState(int j, double x[]);
+void    infil_setInfilFactor(int j);
+double  infil_getInfil(int area, double tstep, double rainfall, double runon,
+        double depth);
 
+void    grnampt_getParams(int j, double p[]);
 int     grnampt_setParams(TGrnAmpt *infil, double p[]);
 void    grnampt_initState(TGrnAmpt *infil);
 double  grnampt_getInfil(TGrnAmpt *infil, double tstep, double irate,
-        double depth, int modelType);                                          //(5.1.010)
+        double depth, int modelType);
 
-#endif
+
+#endif //INFIL_H

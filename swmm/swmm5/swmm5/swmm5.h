@@ -10,8 +10,10 @@
 //   Prototypes for SWMM5 functions exported to swmm5.dll.
 //
 //-----------------------------------------------------------------------------
+
 #ifndef SWMM5_H
 #define SWMM5_H
+
 
 // --- define WINDOWS
 
@@ -26,16 +28,16 @@
 // --- define DLLEXPORT
 
 #ifdef WINDOWS
-  #define DLLEXPORT __declspec(dllexport) __stdcall
+    #define DLLEXPORT __declspec(dllexport) __stdcall
 #else
-  #define DLLEXPORT
+    #define DLLEXPORT
 #endif
 
 // --- use "C" linkage for C++ programs
 
 #ifdef __cplusplus
-extern "C" { 
-#endif 
+extern "C" {
+#endif
 
 int  DLLEXPORT   swmm_run(char* f1, char* f2, char* f3);
 int  DLLEXPORT   swmm_open(char* f1, char* f2, char* f3);
@@ -47,11 +49,12 @@ int  DLLEXPORT   swmm_getMassBalErr(float* runoffErr, float* flowErr,
                  float* qualErr);
 int  DLLEXPORT   swmm_close(void);
 int  DLLEXPORT   swmm_getVersion(void);
-int  DLLEXPORT   swmm_getError(char* errMsg, int msgLen);                      //(5.1.011)
-int  DLLEXPORT   swmm_getWarnings(void);                                       //(5.1.011)
+int  DLLEXPORT   swmm_getError(char* errMsg, int msgLen);
+int  DLLEXPORT   swmm_getWarnings(void);
 
-#ifdef __cplusplus 
-}   // matches the linkage specification from above */ 
+#ifdef __cplusplus
+}   // matches the linkage specification from above */
 #endif
 
-#endif
+
+#endif //SWMM5_H

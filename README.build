@@ -1,6 +1,14 @@
+0. Get the environment right: 
+https://wiki.python.org/moin/WindowsCompilers#Compilers_Installation_and_configuration
+(Open a visual studio command prompt and see if cl.exe command works. If so, there is no need to do anything else.
+winpython knows how to find it)
+
+
 1. New swmm version: replace files in swmm5\swmm5 with the new version. 
 
 THEN comment all definitions CLE, SOL and DLL (they will be defined by the compiler options depending on the OS)
+
+*** NOTE as of 2021 sept this step was not needed.  ***
 
 /**********************************************************
 //  Leave only one of the following 3 lines un-commented,
@@ -9,6 +17,7 @@ THEN comment all definitions CLE, SOL and DLL (they will be defined by the compi
 //#define CLE     /* Compile as a command line executable */
 //#define SOL     /* Compile as a shared object library */
 //#define DLL     /* Compile as a Windows DLL */
+
 
 2. Upload to pypi
 
@@ -20,8 +29,15 @@ python setup.py sdsit
 
 the binaries has to be done with ALL python versions supported. 
 
+install a binary and test
+TESTS: 
+
+python -m doctest -v README.txt
+python ./tests\test_multithreading.py
+
+
 3. Then upload them with twine
-twin upload dist/*
+twine upload dist/*
 
 4. Compilers for windows: Now we (again) use microsoft compilers! So, if python defaults to gcc (mingw) as in winpython 3.4
 
