@@ -100,30 +100,27 @@ One should always use the new interface. The old interface (below) is left only 
 
 
 ::
-:Example 1: Retrieve simulation properties. 
 
-
-::
 
     >>> st.entityList()
-   ['SUBCATCH', 'NODE', 'LINK', 'SYS']
-   >>> st.Subcatch()
-   ['A2', 'A1', 'A3', 'A4', 'A5', 'E1']
-   >>> st.Node()
-   ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'J12']
-   >>> st.Link()
-   ['T4-1', 'T4-2', 'T4-3', 'T1-1', 'T1-2', 'T2-1', 'T2-2', 'T2-3', 'T3-1', 'T3-2', 'T5']
-   >>> st.Sys()
-   ['SYS']
-   >>> st.Pollutants() # no pollutants in this file. 
-   []
-   >>> wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP5.1.inp")
-   >>> wq.SWMM_Npolluts
-   1
-   >>> wq.Pollutants() # TSS in this case.  
-   ['TSS']
-   >>> lst=st.varList("SUBCATCH")
-   >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    ['SUBCATCH', 'NODE', 'LINK', 'SYS']
+    >>> st.Subcatch()
+    ['A2', 'A1', 'A3', 'A4', 'A5', 'E1']
+    >>> st.Node()
+    ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'J12']
+    >>> st.Link()
+    ['T4-1', 'T4-2', 'T4-3', 'T1-1', 'T1-2', 'T2-1', 'T2-2', 'T2-3', 'T3-1', 'T3-2', 'T5']
+    >>> st.Sys()
+    ['SYS']
+    >>> st.Pollutants() # no pollutants in this file. 
+    []
+    >>> wq=SWMM5Simulation("swmm5/examples/waterquality/Example5-EXP5.1.inp")
+    >>> wq.SWMM_Npolluts
+    1
+    >>> wq.Pollutants() # TSS in this case.  
+    ['TSS']
+    >>> lst=st.varList("SUBCATCH")
+    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
       0 Rainfall (in/hr or mm/hr)
       1 Snow depth (in or mm)
       2 Evaporation loss (in/hr or mm/hr)
@@ -134,8 +131,8 @@ One should always use the new interface. The old interface (below) is left only 
       7 Soil Moisture (volumetric fraction, less or equal tosoil porosity)
 
 
-   >>> lst=wq.varList("SUBCATCH") # for the network that has pollutants. 
-   >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    >>> lst=wq.varList("SUBCATCH") # for the network that has pollutants. 
+    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
       0 Rainfall (in/hr or mm/hr)
       1 Snow depth (in or mm)
       2 Evaporation loss (in/hr or mm/hr)
@@ -146,8 +143,8 @@ One should always use the new interface. The old interface (below) is left only 
       7 Soil Moisture (volumetric fraction, less or equal tosoil porosity)
       8 Runoff concentration of TSS (mg/l)
       
-   >>> lst=wq.varList("NODE")
-   >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    >>> lst=wq.varList("NODE")
+    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
       0 Depth of water above invert (ft or m)
       1 Hydraulic head (ft or m)
       2 Volume of stored + ponded water (ft3 or m3)
@@ -155,16 +152,16 @@ One should always use the new interface. The old interface (below) is left only 
       4 Total inflow (lateral + upstream) (flow units)
       5 Flow lost to flooding (flow units)
       6 Concentration of TSS (mg/l)
-   >>> lst=wq.varList("LINK")
-   >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    >>> lst=wq.varList("LINK")
+    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
       0 Flow rate (flow units)
       1 Flow depth (ft or m)
       2 Flow velocity (ft/s or m/s)
       3 Froude number
       4 Capacity (fraction of conduit filled)
       5 Concentration of TSS (mg/l)
-   >>> lst=wq.varList("SYS")
-   >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
+    >>> lst=wq.varList("SYS")
+    >>> print ("\n".join( "%4i %s"% (i,v) for i,v in  enumerate(lst))) # print in a column with index.
       0 Air temperature (deg. F or deg. C)
       1 Rainfall (in/hr or mm/hr)
       2 Snow depth (in or mm)
