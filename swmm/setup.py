@@ -10,7 +10,7 @@ import os
 import glob
 
 NAME='SWMM5'
-VERSION='5.1.015'
+VERSION='5.1.015-1'
 
 # in windows use microsoft compilers
 if os.name == 'nt':
