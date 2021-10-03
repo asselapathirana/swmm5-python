@@ -100,8 +100,12 @@ One should always use the new interface. The old interface (below) is left only 
 
 
 ::
+:Example 1: Retrieve simulation properties. 
 
-   >>> st.entityList()
+
+::
+
+    >>> st.entityList()
    ['SUBCATCH', 'NODE', 'LINK', 'SYS']
    >>> st.Subcatch()
    ['A2', 'A1', 'A3', 'A4', 'A5', 'E1']
