@@ -66,7 +66,7 @@ One should always use the new interface. The old interface (below) is left only 
     
  
     
-:Example 1: Retrive simulation properties. 
+:Example 1: Retrieve simulation properties. 
 
 
 ::
@@ -94,6 +94,7 @@ One should always use the new interface. The old interface (below) is left only 
     >>> st.SWMM_ReportStep
     60
     >>>
+
 
 :Example 2: Prints available entities
 
