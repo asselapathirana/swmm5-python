@@ -97,6 +97,7 @@ One should always use the new interface. The old interface (below) is left only 
 
 :Example 2: Prints available entities
 
+
 ::
 
    >>> st.entityList()
