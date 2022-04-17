@@ -12,7 +12,7 @@ class testSWMM5(unittest.TestCase):
             pass
         except SWMM5Error as e:
             pass
-            self.assertEqual(str(e),'67: \n  ERROR 303: cannot open input file.')
+            self.assertEqual(str(e),'303: \n  ERROR 303: cannot open input file.')
         
     def test_running_with_good_input_file(self):
         """should not raise exceptoins"""

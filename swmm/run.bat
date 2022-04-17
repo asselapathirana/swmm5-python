@@ -1,4 +1,5 @@
 :: echo off
+:: RUN this script in winpython command prompt. 
 :: download epa-swmm binary and install it. Open the examples *inp files using this binary and save them back. (Important to make sure the version compatibility of the library)
 :: Download and extract swmm sourcecode to swmm/swmm5/swmm5 directory. 
 :: first step both in swmm5.c and swmm5.h #undef WINDOWS after its definition
@@ -32,15 +33,16 @@ if not "%1" == "" (
 
 
 if not %good%=="true" (
-	echo "USAGE: %0% <name (case is important check on pypi!)> <arch 64bit/32bit> <python_version x.x.x.x> <version x.x.x.x[dev]>
+	echo "USAGE: %0% <name (case is important check on pypi!)> <arch 64/32> <python_version x.x.x.x> <version x.x.x.x[dev]>
+	echo "Example: %0% SWMM5 64 3980 5.2.0"
 	goto ERROR
 )
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set swig=c:\swig\swigwin-3.0.5\swig.exe
+set swig=C:\_NO_INSTALL\swig\swigwin-4.0.2\swig.exe
 set loc=%~dp0
-set py3=3.3.5.0
-set py2=2.7.6.4
+:: set py3=3.9.8.0
+:: set py2=2.7.6.4
 
 
 ::2.7.6.4 
@@ -51,7 +53,7 @@ set pyverwhl=%pyver:.=%
 
 
 	
-if %arch% == 64bit (
+if %arch% == 64 (
 	set arch1=x64
 	set arch2=win-amd64
 	set arch3=win_amd64
@@ -77,7 +79,7 @@ pause
 echo on
 
 cd /d %loc%
-call D:\WinPython-%arch%-%pyversion%\scripts\env.bat || goto ERROR
+call C:\_NO_INSTALL\python\WPy%arch%-%pyversion%\scripts\env.bat || goto ERROR
 pip install virtualenv 
 echo on
 cd %loc%\%name% || goto ERROR
@@ -86,40 +88,37 @@ echo on
 cd ..
 rd /s /q  build dist env1
 pip install wheel
-python setup.py   bdist_wininst bdist_wheel || goto ERROR
+python setup.py    bdist_wheel || goto ERROR
 cd /d %loc% || goto ERROR
 
-:: test wininst
-rd /s /q   env1
-virtualenv --no-site-packages --clear env1 || goto ERROR
-echo on
-call %loc%\env1\Scripts\activate.bat || goto ERROR
-set OLDPATH=%PATH%
-set PATH=%loc%\env1\Scripts
-echo on
-cd /d %loc% || goto ERROR
-%loc%env1\Scripts\easy_install.exe  %loc%\dist\%name%-%version%.%arch2%-py%pyver%.exe || goto ERROR
-cd /d %loc% || goto ERROR
-echo on
-python -m doctest -f -v README.txt|| goto ERROR
-python tests\test_1.py -v || goto ERROR
-pip install nose 
-python tests\test_multithreading.py || goto ERROR
-set PATH=%OLDPATH%
-
-call env1\Scripts\deactivate.bat || goto ERROR
+:: :: test wininst
+::rd /s /q   env1
+::virtualenv  --clear env1 || goto ERROR
+::echo on
+::call %loc%\env1\Scripts\activate.bat || goto ERROR
+::set OLDPATH=%PATH%
+::set PATH=%loc%\env1\Scripts
+::echo on
+::cd /d %loc% || goto ERROR
+::%loc%env1\Scripts\easy_install.exe  %loc%\dist\%name%-%version%.%arch2%-py%pyver%.exe || goto ERROR
+::cd /d %loc% || goto ERROR
+::echo on
+::python -m doctest -f -v README.txt|| goto ERROR
+::python tests\test_1.py -v || goto ERROR
+::pip install nose 
+::python tests\test_multithreading.py || goto ERROR
+::set PATH=%OLDPATH%
+:: call env1\Scripts\deactivate.bat || goto ERROR
 del env1 /f /q
 :: test wheel
-
-
-virtualenv --no-site-packages --clear env1 || goto ERROR
+virtualenv  --clear env1 || goto ERROR
 echo on
 call %loc%\env1\Scripts\activate.bat || goto ERROR
 set OLDPATH=%PATH%
 set PATH=%loc%\env1\Scripts
 echo on
 cd /d %loc% || goto ERROR
-%loc%env1\Scripts\pip install  %loc%\dist\%name%-%version%-cp%pyverwhl%-none-%arch3%.whl || goto ERROR
+%loc%env1\Scripts\pip install  %loc%dist\%name%-%version%-cp%pyverwhl%-none-%arch3%.whl || goto ERROR
 cd /d %loc% || goto ERROR
 echo on
 python -m doctest -v README.txt|| goto ERROR

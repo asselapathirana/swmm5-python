@@ -1,4 +1,8 @@
-from . import swmm5
+from html import entities
+if __name__=='__main__':
+    import swmm5
+else:
+    from . import swmm5
 from collections import OrderedDict
 from tempfile import mkstemp
 from os.path import basename, dirname
@@ -15,7 +19,7 @@ class SWMM5Error(Exception):
 
     def __init__(self,value):
         self.value=value
-        self.msg=swmm5.error_getMsg(value)
+        self.msg=swmm5.error_getMsg(value, '') # hack need this empty string! (as of 2022-APR-17)
     def __str__(self):
         return repr(self.value)+": "+self.msg
 
@@ -126,20 +130,22 @@ class SWMM5Simulation(object):
         "Capacity (fraction of conduit filled)"]
         li.extend(["Concentration of %s (%s)" % x for x in zip(self._pollutants, self._pollunits)])
         sy=[
-        "Air temperature (deg. F or deg. C)",
-        "Rainfall (in/hr or mm/hr)",
-        "Snow depth (in or mm)",
-        "Evaporation + infiltration loss rate (in/hr or mm/hr)",
-        "Runoff flow (flow units)",
-        "Dry weather inflow (flow units)",
-        "Groundwater inflow (flow units)",
-        "RDII inflow (flow units)",
-        "User supplied direct inflow (flow units)",
-        "Total lateral inflow (sum of variables 4 to 8) (flow units)",
-        "Flow lost to flooding (flow units)",
-        "Flow leaving through outfalls (flow units)",
-        "Volume of stored water (ft3 or m3)",
-        "Evaporation rate (in/day or mm/day)"]
+        "Air temperature (deg. F or deg. C)",                       #0
+        "Rainfall (in/hr or mm/hr)",                                #1
+        "Snow depth (in or mm)",                                    #2
+        "Evaporation + infiltration loss rate (in/hr or mm/hr)",    #3
+        "Runoff flow (flow units)",                                 #4
+        "Dry weather inflow (flow units)",                          #5
+        "Groundwater inflow (flow units)",                          #6
+        "RDII inflow (flow units)",                                 #7
+        "User supplied direct inflow (flow units)",                 #8 
+        "Total lateral inflow (sum of variables 4 to 8) (flow units)",#9
+        "Flow lost to flooding (flow units)",                       #10
+        "Flow leaving through outfalls (flow units)",               #11
+        "Volume of stored water (ft3 or m3)",                       #12
+        "Evaporation rate (in/day or mm/day)",                      #13
+        "Potential evaporation rate (PET) in/day or mm/day)"        #14 The last ) is missing in API docs of swmm 5.2
+        ]
 
         self._variables=OrderedDict()
         self._variables["SUBCATCH"  ]=su
@@ -153,8 +159,6 @@ class SWMM5Simulation(object):
         checkError(swmm5.RunSwmmDll(self.inpFile,self.rptFile,self.outFile))
 
 
-
-
     def __getattribute__(self, name):
         try:
             return object.__getattribute__(self, name)
@@ -166,20 +170,22 @@ class SWMM5Simulation(object):
         raise AttributeError("The attribute %s not found with this class or underlying c interface" % name)
 
 
-    def entityList(self):
+    def entityList(self, within=None ):
+        if within:
+            return list(self._ids[within][1].keys())
         return list(self._ids.keys())
 
     def varList(self,entity):
         return self._variables[entity]
 
     def Subcatch(self):
-        return list(self._ids["SUBCATCH"][1].keys())
+        return list(self._ids["SUBCATCH"][1].keys()) # can be refactored. Deprecated.
     def Node(self):
-        return list(self._ids["NODE"][1].keys())
+        return list(self._ids["NODE"][1].keys())     # can be refactored. Deprecated.
     def Link(self):
-        return list(self._ids["LINK"][1].keys())
+        return list(self._ids["LINK"][1].keys())     # can be refactored. Deprecated.
     def Sys(self):
-        return list(self._ids["SYS"][1].keys())
+        return list(self._ids["SYS"][1].keys())      # can be refactored. Deprecated.
     def Pollutants(self,index=0):
         return self._pollutants
     def getFiles(self):
@@ -194,9 +200,28 @@ class SWMM5Simulation(object):
     def Flow_Units(self):
         return ["CFS", "GPM", "MGD" , "CMS", "LPS", "LPD" ][self.SWMM_FlowUnits]
 
+    def allResults(self):
+        """Returns the whole result set as a list of list of pandas dataframes. Can be heavy and inefficient, but easy to manage"""
+        results=OrderedDict()
+        for topentity in self.entityList():
+            _results=OrderedDict()
+            for withinentiry in self.entityList(within=topentity):
+                __results=OrderedDict()
+                for index, value in enumerate(self._variables[topentity]):
+                    res=self.Results(topentity, withinentiry, index)
+                    __results[value]=res
+                _results[withinentiry]=__results
+            results[topentity]=_results
+
+        return results
+
+
+
 
 if __name__=="__main__":
     ss=SWMM5Simulation("examples/simple/swmm5Example.inp")
     print(ss.SWMM_Nperiods)
     print (list(ss.Results('NODE','J1', 4)))
     print (ss.SWMM5_Version())
+    ar=ss.allResults()
+    print(ar)

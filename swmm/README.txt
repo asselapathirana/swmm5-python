@@ -6,6 +6,8 @@ Released under GNU GPL v.3
 
 Release History:
 ----------------
+version 5.2.000 released in 2022
+
 version 5.1.015 released in 2021
 
 version 1.0.0.1 first production (non-beta) release. 
@@ -72,9 +74,9 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
-    '5.1.015'
+    '5.2.000'
     >>> st.SWMM5_VERSION            # same thing as an integer 
-    51015
+    52000
     >>> st.Flow_Units()           # Flow units. 
     'LPS'
     >>> st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  
@@ -101,13 +103,21 @@ One should always use the new interface. The old interface (below) is left only 
 
    >>> st.entityList()
    ['SUBCATCH', 'NODE', 'LINK', 'SYS']
-   >>> st.Subcatch()
+   >>> st.Subcatch() # Deprecated
    ['A2', 'A1', 'A3', 'A4', 'A5', 'E1']
-   >>> st.Node()
+   >>> st.entityList(within='SUBCATCH') # use these new since version 5.2
+   ['A2', 'A1', 'A3', 'A4', 'A5', 'E1']
+   >>> st.Node() # Deprecated
    ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'J12']
-   >>> st.Link()
+   >>> st.entityList(within='NODE') # use these new since version 5.2
+   ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'J12']
+   >>> st.Link() # Deprecated
    ['T4-1', 'T4-2', 'T4-3', 'T1-1', 'T1-2', 'T2-1', 'T2-2', 'T2-3', 'T3-1', 'T3-2', 'T5']
-   >>> st.Sys()
+   >>> st.entityList(within='LINK')
+   ['T4-1', 'T4-2', 'T4-3', 'T1-1', 'T1-2', 'T2-1', 'T2-2', 'T2-3', 'T3-1', 'T3-2', 'T5']
+   >>> st.Sys() # Deprecated
+   ['SYS']
+   >>> st.entityList(within='SYS') # use these new since version 5.2
    ['SYS']
    >>> st.Pollutants() # no pollutants in this file. 
    []
@@ -174,6 +184,7 @@ One should always use the new interface. The old interface (below) is left only 
      11 Flow leaving through outfalls (flow units)
      12 Volume of stored water (ft3 or m3)
      13 Evaporation rate (in/day or mm/day)
+     14 Potential evaporation rate (PET) in/day or mm/day)
   
    
    
@@ -212,7 +223,7 @@ One should always use the new interface. The old interface (below) is left only 
 
 ::
 
-    >>> wq.Subcatch()
+    >>> wq.entityList(within='SUBCATCH')
     ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
 	
     >>> r=list(wq.Results('SUBCATCH','S3', 8)) # TSS out of catchment 'S3'. We convert it to a list.
@@ -231,7 +242,7 @@ One should always use the new interface. The old interface (below) is left only 
 	
 ::
 
-    >>> wq.Node()
+    >>> wq.entityList(within='NODE')
     ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'O1']
 	
     >>> r=list(wq.Results('NODE','J3', 6)) # TSS out of Node 'J3'. We convert it to a list.
@@ -247,11 +258,11 @@ One should always use the new interface. The old interface (below) is left only 
     15.14
     15.64
 
-    >>> wq.Link()
+    >>> wq.entityList(within='LINK')
     ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11']
 	
     >>> r=list(wq.Results('LINK','C11', 5)) # TSS out of Link 'C11'. We convert it to a list.
-    >>> print ("\n".join( "%5.2f"% (i) for i in  r)) # Lets print the first 10 items.  #doctest:  +ELLIPSIS
+    >>> print ("\n".join( "%5.2f"% (i) for i in  r)) #   #doctest:  +ELLIPSIS
      0.00
      0.00
      0.00
@@ -259,14 +270,44 @@ One should always use the new interface. The old interface (below) is left only 
      0.00
      0.00
      0.00
-     5.55
-     9.98
-    12.72
+     0.00
+     0.00
+     0.00
+     0.00
+     0.00
+     6.40
+    12.64
+    16.57
+    19.60
+    22.53
+    25.40
     ...
-    44.95
+     0.00
 
-   
-:Example 5: Tracking output files
+:Example 5: Get all results once (inefficient, but easy)
+
+::
+
+    >>> simtemp=SWMM5Simulation("swmm5/examples/simple/swmm5Example.inp")
+    >>> ar=simtemp.allResults()
+    >>> len(ar)
+    4
+    >>> list(ar.keys())
+    ['SUBCATCH', 'NODE', 'LINK', 'SYS']
+    >>> len(ar['NODE'])
+    12
+    >>> list(ar['NODE'].keys())
+    ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 'J11', 'J12']
+    >>> list(ar['NODE']['J1'].keys())[5]
+    'Flow lost to flooding (flow units)'
+    >>> max(list(ar['NODE']['J1']['Flow lost to flooding (flow units)'])) # doctest: +ELLIPSIS
+    4267.9...
+    >>> # or we can use the index for shorthand
+    >>> max(list(list(ar['NODE']['J10'].values())[5]))  # doctest: +ELLIPSIS
+    2252.7...
+
+
+:Example 6: Tracking output files
 
 ::
 

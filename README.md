@@ -72,9 +72,9 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
-    '5.1.015'
+    '5.2.000'
     >>> st.SWMM5_VERSION            # same thing as an integer 
-    51015
+    52000
     >>> st.Flow_Units()           # Flow units. 
     'LPS'
     >>> st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  

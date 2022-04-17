@@ -3,49 +3,28 @@ https://wiki.python.org/moin/WindowsCompilers#Compilers_Installation_and_configu
 (Open a visual studio command prompt and see if cl.exe command works. If so, there is no need to do anything else.
 winpython knows how to find it)
 
+*** When new files are added by swmm upstream, make sure they are updated in MANIFEST.in file!
+*** if you change the swmm5.i file go to swmm5 directory and run 
+c:\_NO_INSTALL\swig\swigwin-4.0.2\swig.exe -python swmm5.i
 
-1. New swmm version: replace files in swmm5\swmm5 with the new version. 
+Now build : 
+pip install build
+[ hacky way I test: 
+pip install --force-reinstall dist\.....whl
+python -m doctest README.txt -v
+python tests\test_1.py
+python tests\test_multithreading.py
 
-THEN comment all definitions CLE, SOL and DLL (they will be defined by the compiler options depending on the OS)
-
-*** NOTE as of 2021 sept this step was not needed.  ***
-
-/**********************************************************
-//  Leave only one of the following 3 lines un-commented,
-//  depending on the choice of compilation target
-//**********************************************************
-//#define CLE     /* Compile as a command line executable */
-//#define SOL     /* Compile as a shared object library */
-//#define DLL     /* Compile as a Windows DLL */
-
-
-2. Upload to pypi
-
-delete directory dist if exists. 
-
-python setup.py bdist_wininst
-python setup.py bdist_wheel
-python setup.py sdsit
-
-the binaries has to be done with ALL python versions supported. 
-
-install a binary and test
-TESTS: 
-
-python -m doctest -v README.txt
-python ./tests\test_multithreading.py
+then repeat again with 
+pip install --force-reinstall dist\.....tar.gz
+...
+...
+...
+]
 
 
-3. Then upload them with twine
+2. Then upload them with twine
 twine upload dist/*
 
-4. Compilers for windows: Now we (again) use microsoft compilers! So, if python defaults to gcc (mingw) as in winpython 3.4
-
-edit pydistutils.cfg file to have ONLY following content (
-
-[config]
-
-
-(During compilation (setup.py) you will be asked to download certain compilers from microsfot)
 
 That's it. 
