@@ -9,7 +9,7 @@ from itertools import product
 import os
 
 NAME='SWMM5'
-VERSION='5.2.0post2'
+VERSION='5.2.0post4'
 
 # in windows use microsoft compilers
 if os.name == 'nt':

@@ -1188,14 +1188,14 @@ void updateActionList(struct TAction* a)
         listItem = listItem->next;
     }
 
-    // --- action not listed so add it to ActionList
-    listItem = (struct TActionList *) malloc(sizeof(struct TActionList));
-    if (listItem)
+   // --- action not listed so add it to ActionList
+    if ( !listItem )
     {
+        listItem = (struct TActionList *) malloc(sizeof(struct TActionList));
         listItem->next = ActionList;
         ActionList = listItem;
-        listItem->action = a;
     }
+    listItem->action = a;
 }
 
 //=============================================================================
