@@ -6,6 +6,7 @@ setup.py file for SWMM5 pyton library  - Assela Pathirana
 from distutils.core import  setup, Extension
 from itertools import product
 #from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext
 import os
 
 NAME='SWMM5'
@@ -15,9 +16,22 @@ VERSION='5.2.0post4'
 if os.name == 'nt':
     compilerargs = ['-D/DLL=1']
     linkerargs   = []
+    class custom_build_ext(build_ext):
+        pass
 else:
     compilerargs = ['-fPIC', '-D SOL=1', '-fopenmp','-Wno-deprecated','-O3','-Wno-error','-Wno-error=format-security' ]
     linkerargs   = ['-fopenmp','-Wno-deprecated','-O3','-Wno-error']
+
+    class custom_build_ext(build_ext):
+        def build_extensions(self):
+            # Override the compiler executables. Importantly, this
+            # removes the "default" compiler flags that would
+            # otherwise get passed on to to the compiler, i.e.,
+            # distutils.sysconfig.get_var("CFLAGS").
+            self.compiler.set_executable("compiler_so", "g++")
+            self.compiler.set_executable("compiler_cxx", "g++")
+            self.compiler.set_executable("linker_so", "g++")
+            build_ext.build_extensions(self)
 
 
 with open("README.txt","r") as f:
@@ -77,5 +91,6 @@ setup (name = NAME,
        long_description = LONGDISC, 
        classifiers=CLASSIFY,
 	   keywords=KEYWORDS,
-       #options={'build_ext':{'inplace':True}}
+       #options={'build_ext':{'inplace':True}}, 
+       cmdclass={"build_ext": custom_build_ext}
        )
