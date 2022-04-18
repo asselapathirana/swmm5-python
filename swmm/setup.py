@@ -16,7 +16,7 @@ if os.name == 'nt':
     compilerargs = ['-D/DLL=1']
     linkerargs   = []
 else:
-    compilerargs = ['-D SOL=1', '-fopenmp','-Wno-deprecated','-O3','-Wno-error','-Wno-error=format-security' ]
+    compilerargs = ['-fPIC', '-D SOL=1', '-fopenmp','-Wno-deprecated','-O3','-Wno-error','-Wno-error=format-security' ]
     linkerargs   = ['-fopenmp','-Wno-deprecated','-O3','-Wno-error']
 
 
