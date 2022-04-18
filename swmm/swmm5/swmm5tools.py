@@ -208,7 +208,7 @@ class SWMM5Simulation(object):
             for withinentiry in self.entityList(within=topentity):
                 __results=OrderedDict()
                 for index, value in enumerate(self._variables[topentity]):
-                    res=self.Results(topentity, withinentiry, index)
+                    res=list(self.Results(topentity, withinentiry, index))
                     __results[value]=res
                 _results[withinentiry]=__results
             results[topentity]=_results
