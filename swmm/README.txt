@@ -8,6 +8,7 @@ Release History:
 ----------------
 version 5.2.0post4 
 (fixed upstream bugs in swmm code https://www.openswmm.org/Topic/31733/undeclared-problems-when-compiling-swmm5-2-on-linux)
+However, linux version still not working (Core dumping. For linux, I suggest to use 5.1.015 for the moment!)
 version 5.2.000 released in 2022
 
 version 5.1.015 released in 2021
