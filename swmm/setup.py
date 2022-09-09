@@ -10,7 +10,7 @@ from setuptools.command.build_ext import build_ext
 import os
 
 NAME='SWMM5'
-VERSION='5.2.0post5'
+VERSION='5.2.0.post6'
 
 # in windows use microsoft compilers
 if os.name == 'nt':
