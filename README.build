@@ -3,12 +3,14 @@ https://wiki.python.org/moin/WindowsCompilers#Compilers_Installation_and_configu
 (Open a visual studio command prompt and see if cl.exe command works. If so, there is no need to do anything else.
 winpython knows how to find it)
 
+
 *** When new files are added by swmm upstream, make sure they are updated in MANIFEST.in file!
 *** if you change the swmm5.i file go to swmm5 directory and run 
 c:\_NO_INSTALL\swig\swigwin-4.0.2\swig.exe -python swmm5.i
 
 Now build : 
-python setup.py  build
+(first delete all files in the build directory!)
+python setup.py  build wheel
 [ hacky way I test: 
 pip install --force-reinstall dist\.....whl
 python -m doctest README.txt -v

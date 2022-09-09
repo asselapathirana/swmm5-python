@@ -23,15 +23,16 @@ else:
     linkerargs   = ['-fopenmp','-Wno-deprecated','-O3','-Wno-error']
 
     class custom_build_ext(build_ext):
-        def build_extensions(self):
-            # Override the compiler executables. Importantly, this
-            # removes the "default" compiler flags that would
-            # otherwise get passed on to to the compiler, i.e.,
-            # distutils.sysconfig.get_var("CFLAGS").
-            self.compiler.set_executable("compiler_so", "g++")
-            self.compiler.set_executable("compiler_cxx", "g++")
-            self.compiler.set_executable("linker_so", "g++")
-            build_ext.build_extensions(self)
+        pass
+        #def build_extensions(self):
+        #    # Override the compiler executables. Importantly, this
+        #    # removes the "default" compiler flags that would
+        #    # otherwise get passed on to to the compiler, i.e.,
+        #    # distutils.sysconfig.get_var("CFLAGS").
+        #    self.compiler.set_executable("compiler_so", "g++")
+        #    self.compiler.set_executable("compiler_cxx", "g++")
+        #    self.compiler.set_executable("linker_so", "g++")
+        #    build_ext.build_extensions(self)
 
 
 with open("README.txt","r") as f:

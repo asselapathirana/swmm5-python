@@ -8,7 +8,8 @@ Release History:
 ----------------
 version 5.2.1
 Newer version of swmm (5.2.1)
-Support for pytohn 3.10 added. 
+Support for python 3.10 added.
+Still linux version does not work.  (removing custom_build_ext gets to  build, but causes buffer overflow)
 
 version 5.2.0.post6
 (fixed upstream bugs in swmm code https://www.openswmm.org/Topic/31733/undeclared-problems-when-compiling-swmm5-2-on-linux)
@@ -81,9 +82,9 @@ One should always use the new interface. The old interface (below) is left only 
 ::
 
     >>> st.SWMM5_Version()          # Version of underlying SWMM5 engine. 
-    '5.2.000'
+    '5.2.001'
     >>> st.SWMM5_VERSION            # same thing as an integer 
-    52000
+    52001
     >>> st.Flow_Units()           # Flow units. 
     'LPS'
     >>> st.SWMM_FlowUnits         # returns flow units as an index.  0 = CFS, 1 = GPM, 2 = MGD, 3 = CMS, 4 = LPS, and 5 = LPD  
@@ -282,12 +283,11 @@ One should always use the new interface. The old interface (below) is left only 
      0.00
      0.00
      0.00
-     6.40
-    12.64
-    16.57
-    19.60
-    22.53
-    25.40
+     6.50
+    12.81
+    16.77
+    19.81
+    22.73
     ...
      0.00
 
