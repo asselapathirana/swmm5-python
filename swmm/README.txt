@@ -6,6 +6,10 @@ Released under GNU GPL v.3
 
 Release History:
 ----------------
+version 5.2.1
+Newer version of swmm (5.2.1)
+Support for pytohn 3.10 added. 
+
 version 5.2.0.post6
 (fixed upstream bugs in swmm code https://www.openswmm.org/Topic/31733/undeclared-problems-when-compiling-swmm5-2-on-linux)
 However, linux version still not working (Core dumping. For linux, I suggest to use 5.1.015 for the moment!)

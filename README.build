@@ -8,7 +8,7 @@ winpython knows how to find it)
 c:\_NO_INSTALL\swig\swigwin-4.0.2\swig.exe -python swmm5.i
 
 Now build : 
-pip install build
+python setup.py  build
 [ hacky way I test: 
 pip install --force-reinstall dist\.....whl
 python -m doctest README.txt -v

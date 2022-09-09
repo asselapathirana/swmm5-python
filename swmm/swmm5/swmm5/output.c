@@ -3,7 +3,7 @@
 //
 //   Project:  EPA SWMM5
 //   Version:  5.2
-//   Date:     11/01/21  (Build 5.2.0)
+//   Date:     06/01/22  (Build 5.2.1)
 //   Author:   L. Rossman
 //
 //   Binary output file access functions.
@@ -26,6 +26,8 @@
 //   - Changed how time step averaged flow is computed.
 //   - Object's rptFlag changed to record its index in output file.
 //   - Large file support added.
+//   Build5.2.1:
+//   - Corrects the definition of F_OFF for non-Microsoft C/C++ compilers.
 //-----------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE
 
