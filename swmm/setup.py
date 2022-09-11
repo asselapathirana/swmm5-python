@@ -3,7 +3,7 @@
 setup.py file for SWMM5 pyton library  - Assela Pathirana
 """
 
-from distutils.core import  setup, Extension
+from setuptools import  setup, Extension
 from itertools import product
 #from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
