@@ -8,7 +8,6 @@ from itertools import product
 #from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 import os
-import pathlib
 
 NAME='SWMM5'
 VERSION='5.2.1'
@@ -20,43 +19,20 @@ if os.name == 'nt':
     class custom_build_ext(build_ext):
         pass
 else:
-
-    class CMakeExtension(Extension):
-        def __init__(self, name):
-            # don't invoke the original build_ext for this special extension
-            super().__init__(name, sources=[])
-
     compilerargs = ['-fPIC', '-D SOL=1', '-fopenmp','-Wno-deprecated','-O3','-Wno-error','-Wno-error=format-security' ]
     linkerargs   = ['-fopenmp','-Wno-deprecated','-O3','-Wno-error']
 
     class custom_build_ext(build_ext):
-        cwd = pathlib.Path().absolute()
-        # these dirs will be created in build_py, so if you don't have
-        # any python sources to bundle, the dirs will be missing
-        build_temp = pathlib.Path(self.build_temp)
-        build_temp.mkdir(parents=True, exist_ok=True)
-        extdir = pathlib.Path(self.get_ext_fullpath(ext.name))
-        extdir.mkdir(parents=True, exist_ok=True)
-        # example of cmake args
-        config = 'Debug' if self.debug else 'Release'
-        cmake_args = [
-            '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + str(extdir.parent.absolute()),
-            '-DCMAKE_BUILD_TYPE=' + config
-        ]
-
-        # example of build args
-        build_args = [
-            '--config', config,
-            '--', '-j4'
-        ]
-
-        os.chdir(str(build_temp))
-        self.spawn(['cmake', str(cwd)] + cmake_args)
-        if not self.dry_run:
-            self.spawn(['cmake', '--build', '.'] + build_args)
-        # Troubleshooting: if fail on line above then delete all possible 
-        # temporary CMake files including "CMakeCache.txt" in top level dir.
-        os.chdir(str(cwd))
+        pass
+        #def build_extensions(self):
+        #    # Override the compiler executables. Importantly, this
+        #    # removes the "default" compiler flags that would
+        #    # otherwise get passed on to to the compiler, i.e.,
+        #    # distutils.sysconfig.get_var("CFLAGS").
+        #    self.compiler.set_executable("compiler_so", "g++")
+        #    self.compiler.set_executable("compiler_cxx", "g++")
+        #    self.compiler.set_executable("linker_so", "g++")
+        #    build_ext.build_extensions(self)
 
 
 with open("README.txt","r") as f:
