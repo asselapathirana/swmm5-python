@@ -40,7 +40,7 @@ file(GLOB SWMM_LIB_ALL RELATIVE ${PROJECT_SOURCE_DIR} swmm5/*.c swmm5/*.h swmm5/
 # Exclude main.c from the library build
 list(REMOVE_ITEM SWMM_LIB_ALL "swmm5/swmm5/main.c")
 
-# Configure the shared library
+# Configure the module
 if(MSVC AND "${CMAKE_VS_PLATFORM_NAME}" MATCHES "(Win32)")
   message(STATUS "Configuring with swmm5.def mapping")
   add_library(_swmm5 MODULE ${SWMM_LIB_ALL} ${PROJECT_SOURCE_DIR}/swmm5/swmm5/swmm5.def)
@@ -48,11 +48,10 @@ if(MSVC AND "${CMAKE_VS_PLATFORM_NAME}" MATCHES "(Win32)")
 
 else()
   list(REMOVE_ITEM SWMM_LIB_ALL "swmm5/swmm5.def")
-  set(CMAKE_STATIC_LIBRARY_PREFIX "")
   add_library(_swmm5 MODULE ${SWMM_LIB_ALL})
   find_library(MATH_LIBRARY m)
   if(MATH_LIBRARY)
-    target_link_libraries(_swmm5 PUBLIC ${MATH_LIBRARY} ${PYTHON_LIBRARIES})
+    target_link_libraries(_swmm5 PUBLIC ${MATH_LIBRARY} )
   endif()
 endif()
 
